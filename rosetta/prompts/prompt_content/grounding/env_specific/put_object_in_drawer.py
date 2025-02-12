@@ -1,8 +1,8 @@
 from rosetta.prompts.utils import *
-from .task import Task
+from .prompt_env import PromptEnv
 
 
-class PutObjectInDrawer(Task):
+class PutObjectInDrawer(PromptEnv):
     def __init__(self):
         self.description = "Put Apple In Drawer"
         self.setup_description = ("There should be a robot gripper, a red apple, a red soup can, and a drawer on the floor. Objects are roughly 0.05 in high and width. Object positions are measured at the center of the object. "

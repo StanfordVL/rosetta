@@ -1,8 +1,8 @@
 from rosetta.prompts.utils import *
-from .task import Task
+from .prompt_env import PromptEnv
 
 
-class PushBallShort(Task):
+class PushBallShort(PromptEnv):
     def __init__(self):
         self.description = "Push a ball to goal position"
         self.setup_description = """There should be a robot gripper, a ball, and a target on the table. 

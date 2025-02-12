@@ -1,8 +1,8 @@
 from rosetta.prompts.utils import *
-from .task import Task
+from .prompt_env import PromptEnv
 
 
-class ObjectToBin(Task):
+class ObjectToBin(PromptEnv):
     def __init__(self):
         self.description = "Put some objects in bins."
         self.setup_description = ("There should be a robot gripper, an apple, an orange, a baseball, a tennis ball, and two bins on the table. One bin is light blue and one is white."

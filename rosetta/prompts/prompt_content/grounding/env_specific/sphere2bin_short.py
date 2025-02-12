@@ -1,8 +1,8 @@
 from rosetta.prompts.utils import *
-from .task import Task
+from .prompt_env import PromptEnv
 
 
-class Sphere2BinShort(Task):
+class Sphere2BinShort(PromptEnv):
 
     bin_base_half_len = 0.08
     bin_height = 0.015

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Task(ABC):
+class PromptEnv(ABC):
     description = ""
     setup_description=""
 
