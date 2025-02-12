@@ -77,17 +77,17 @@ PROMPT_DIR = "prompt_content"
 
 ENV_ID_TO_SIM_CLS = {
     # Main short-horizon continuous control
-    "SphereAndBins": SphereAndBinsEnv,
     "BallAndTarget": BallAndTargetEnv,
+    "SphereAndBins": SphereAndBinsEnv,
     
     # Main long-horizon action primitive
-    "ThreeCubes": ThreeCubesEnv,
     "ObjectsAndBins": ObjectsAndBinsEnv,
     "ObjectsAndDrawer": ObjectsAndDrawerEnv,
+    "ThreeCubes": ThreeCubesEnv,
     
-    # Baseline + ablation only (short-horizon continuous control)
+    # Baselines + ablations only (short-horizon continuous control)
     "CubeAndPoint": CubeAndPointEnv,
-    "CubeAndTarget": CubeAndTargetEnv,
+    "CubeAndTarget": CubeAndTargetEnv
 }
 
 
