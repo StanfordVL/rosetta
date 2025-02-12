@@ -60,7 +60,7 @@ $environment_code
 
 ## Demonstration Summary: $demo_summary
 
-## Human Feedback: $grounded_feedback
+## Human Feedback: $grounded_preference
 
 ## New Task Goal: $new_description
 

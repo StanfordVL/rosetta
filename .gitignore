@@ -3,8 +3,8 @@ debug_samples/
 exps/
 outputs/
 reward_outputs/
-grounded_feedback_outputs/
-grounded_feedback_exps/
+grounded_preference_outputs/
+grounded_preference_exps/
 # bug_repro_scripts/
 
 *baron*.json

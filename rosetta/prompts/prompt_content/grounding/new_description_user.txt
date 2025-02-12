@@ -1,6 +1,6 @@
 Current task description: $task_description
 Demo description: $demo_description
-Feedback: $grounded_feedback
+Feedback: $grounded_preference
 
 # Your output should be a JSON object with the following format:
 {

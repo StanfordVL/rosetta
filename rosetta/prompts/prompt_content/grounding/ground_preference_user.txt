@@ -18,7 +18,7 @@ $task_description
 $video_description
 
 # Feedback
-"$original_feedback"
+"$original_preference"
 
 # Your task
 1. Think step by step to briefly summarize the demonstration, then go through the checklist, then give me your final version of the feedback, grounded to the description.

@@ -16,7 +16,7 @@ $compute_dense_reward
 ```
 
 # Human feedback:
-$original_feedback
+$original_preference
 
 
 Please generate a reward function that follows all guidelines and addresses the human feedback. The code output should be formatted as a python code string: "```python ... ```".

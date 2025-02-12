@@ -37,7 +37,7 @@ def text2reward(
         "env_class_desc": get_prompt_content.get(f"{content_version}/env_class_desc"),
         "documentation": get_prompt_content(f"documentation/{act_space}"),
         "compute_dense_reward": prev_funcs.get("compute_dense_reward", None),
-        "original_feedback": human_input
+        "original_preference": human_input
     })
     default_save_msg_hist(user_code_msg, hist, hist_f)
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
@@ -76,4 +76,4 @@ def text2reward(
         )
     all_funcs.append(latest_funcs.copy())
     
-    return {"feedback": human_input}, latest_funcs, all_funcs, num_stages
+    return {"preference": human_input}, latest_funcs, all_funcs, num_stages

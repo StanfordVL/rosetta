@@ -1,7 +1,7 @@
 import copy
 import inspect
 
-from rosetta.prompts.grounding import ground_feedback
+from rosetta.prompts.grounding import ground_preference
 from rosetta.prompts.iterative_error_correction import o1mini_error_loop
 from rosetta.prompts.prompt_message import PromptMessage
 from rosetta.prompts.utils import *
@@ -29,8 +29,8 @@ def rosetta_sh(
     funcs_to_overwrite = FUNCS_TO_OVERWRITE[act_space]
 
     # PHASE 1: GROUNDING 
-    # Step 1: ground feedback 
-    grounding_components = ground_feedback(
+    # Step 1: ground preference 
+    grounding_components = ground_preference(
         demo_dir,
         human_input,
         env_id,
@@ -40,12 +40,12 @@ def rosetta_sh(
     )
 
     # Phase 2: STAGING
-    # Step 2: add feedback CoT reward system message to history 
+    # Step 2: add preference CoT reward system message to history 
     system_msg = PromptMessage(role="system", content=get_prompt_content(f"{content_version}/fr_system"))
     default_save_msg_hist(system_msg, hist, hist_f)
     default_save_msg_hist(system_msg, debug_hist, debug_f)
 
-    # Step 2: add feedback plan user message to history 
+    # Step 2: add preference plan user message to history 
     # Prepare environment code
     raw_env_code = inspect.getsource(ENV_ID_TO_SIM_CLS[env_id])
     env_code = prep_env_code(
@@ -61,13 +61,13 @@ def rosetta_sh(
     user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
         "demo_summary": grounding_components["demo_summary"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code
     })
     default_save_msg_hist(user_plan_msg, hist, hist_f)
     default_save_msg_hist(user_plan_msg, debug_hist, debug_f)
 
-    # Step 3: run api, get feedback plan assistant message from gpt-4o
+    # Step 3: run api, get preference plan assistant message from gpt-4o
     asst_plan_msg = query_until_complete(client, hist, "gpt-4o", params)
 
     # Phase 2: CODING
@@ -76,7 +76,7 @@ def rosetta_sh(
     alt_user_plan_msg.fill_dynamic_fields({
         "task_description": task_description,
         "demo_summary": grounding_components["demo_summary"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code
     })
     hist[0] = alt_user_plan_msg
@@ -98,10 +98,10 @@ def rosetta_sh(
     default_save_msg_hist(user_code_msg, hist, hist_f)
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
 
-    # Step 7: run api, get feedback code assistant message 
+    # Step 7: run api, get preference code assistant message 
     asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
 
-    # Step 8: add feedback code asst message to history and update function dict 
+    # Step 8: add preference code asst message to history and update function dict 
     default_save_msg_hist(asst_code_msg, hist, hist_f)
     default_save_msg_hist(asst_code_msg, debug_hist, debug_f)
     latest_funcs = update_latest_funcs(asst_code_msg, latest_funcs)

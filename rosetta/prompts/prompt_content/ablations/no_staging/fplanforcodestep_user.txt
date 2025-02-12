@@ -31,7 +31,7 @@ $environment_code
 ### Human feedback
 Task description BEFORE the human gave feedback: $task_description
 Robot execution description: $demo_summary
-Human's feedback: $grounded_feedback
+Human's feedback: $grounded_preference
 
 Make a high-level plan for rewriting `evaluate` and `compute_dense_reward`. The plan should be a series of stages.
 - Don't code yet, just plan the stages.

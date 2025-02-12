@@ -15,10 +15,10 @@ $compute_dense_reward
 
 Your reward function code has been analyzed, the feedback is as follows: 
 # Human Feedback:
-$original_feedback
+$original_preference
 
 # Objective Feedback:
-$objective_feedback
+$objective_preference
 
 Please carefully analyze the policy feedback and provide a new, improved reward function that can better solve the task. Some helpful tips for analyzing the policy feedback:
     (1) If the success rates are always near zero, then you must rewrite the entire reward function

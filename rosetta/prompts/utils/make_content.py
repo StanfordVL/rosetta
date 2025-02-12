@@ -1,7 +1,6 @@
 '''
 Utils for making FM user messages
 '''
-
 import ast 
 import astor
 import inspect
@@ -87,7 +86,7 @@ def get_method_code(cls):
 
 def override_code_message(role, func_dict):
     new_code_text = "\n\n".join([f"## {name}\n\n```python\n{function}\n```" for name, function in func_dict.items()])
-    content = f"Here's new code that integrates the feedback into the reward calculation:\n\n{new_code_text}\n\nThis should help the robot incorporate the feedback."
+    content = f"Here's new code that integrates the preference into the reward calculation:\n\n{new_code_text}\n\nThis should help the robot incorporate the preference."
     return PromptMessage(role=role, content=content)
 
 

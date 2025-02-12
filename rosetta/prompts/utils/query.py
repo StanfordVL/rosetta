@@ -71,7 +71,7 @@ def query_until_complete(
             response = openai.Completion.create(
                 model=model,
                 messages=messages,
-                max_completion_tokens=max_completion_tokens,
+                max_completion_tokens=params["max_completion_tokens"],
                 temperature=params["temperature"],
                 stop=None  # You can customize this if you have specific endpoint tokens.
             )

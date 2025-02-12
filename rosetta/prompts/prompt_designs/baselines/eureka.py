@@ -27,7 +27,7 @@ def eureka(
     num_stages = None
     funcs_to_overwrite = ["compute_dense_reward"]
 
-    objective_feedback = kwargs.get("objective_feedback", None),
+    objective_preference = kwargs.get("objective_preference", None),
     inner_num_gen = kwargs.get("inner_num_gen", 1)
     
     i=0
@@ -58,8 +58,8 @@ def eureka(
                 "environment_code": env_code,
                 "documentation": get_prompt_content(f"documentation/{act_space}"),
                 "compute_dense_reward": prev_funcs.get("compute_dense_reward", None),
-                "original_feedback": human_input,
-                "objective_feedback": objective_feedback
+                "original_preference": human_input,
+                "objective_preference": objective_preference
             })
             default_save_msg_hist(user_code_msg, tmp_hist, hist_f)
             default_save_msg_hist(user_code_msg, debug_hist, debug_f)
@@ -93,4 +93,4 @@ def eureka(
         if error>3:
             raise Exception(f"Too many errors ({error}) in the generation")
     
-    return {"feedback": human_input}, tmp_latest_funcs, all_funcs, num_stages
+    return {"preference": human_input}, tmp_latest_funcs, all_funcs, num_stages

@@ -1,6 +1,6 @@
 import inspect
 
-from rosetta.prompts.grounding import ground_feedback
+from rosetta.prompts.grounding import ground_preference
 from rosetta.prompts.iterative_error_correction import o1mini_error_loop
 from rosetta.prompts.prompt_content.grounding.env_specific import ENV_ID_TO_GROUNDING_CLS
 from rosetta.prompts.prompt_message import PromptMessage
@@ -30,8 +30,8 @@ def rosetta_lh(
     funcs_to_overwrite = FUNCS_TO_OVERWRITE[act_space]
 
     # PHASE 1: GROUNDING 
-    # Step 1: ground feedback 
-    grounding_components = ground_feedback(
+    # Step 1: ground preference 
+    grounding_components = ground_preference(
         demo_dir,
         human_input,
         env_id,
@@ -42,12 +42,12 @@ def rosetta_lh(
     env_info = ENV_ID_TO_GROUNDING_CLS[env_id]
 
     # Phase 1: gpt-4o plan 
-    # Step 1: add feedback CoT reward system message to history
+    # Step 1: add preference CoT reward system message to history
     system_msg = PromptMessage(role="system", content=get_prompt_content(f"{content_version}/fr_system"))
     default_save_msg_hist(system_msg, hist, hist_f)
     default_save_msg_hist(system_msg, debug_hist, debug_f)
 
-    # Step 2: add feedback plan user message to history
+    # Step 2: add preference plan user message to history
     # Prepare environment code
     raw_env_code = inspect.getsource(ENV_ID_TO_SIM_CLS[env_id])
     env_code = prep_env_code(
@@ -63,7 +63,7 @@ def rosetta_lh(
     user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
         "demo_summary": grounding_components["demo_summary"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code,
         "new_description": grounding_components["next_description"],
         "setup_description": env_info.setup_description
@@ -71,10 +71,10 @@ def rosetta_lh(
     default_save_msg_hist(user_plan_msg, hist, hist_f)
     default_save_msg_hist(user_plan_msg, debug_hist, debug_f)
 
-    # Step 3: run api, get feedback plan assistant message from gpt-4o
+    # Step 3: run api, get preference plan assistant message from gpt-4o
     asst_plan_msg = query_until_complete(client, hist, "gpt-4o", params)
 
-    # Step 4: get target action list from feedback plan assistant message
+    # Step 4: get target action list from preference plan assistant message
     target_actions = extract_target_actions(asst_plan_msg)
 
     # Phase 2: o1-mini code draft
@@ -83,7 +83,7 @@ def rosetta_lh(
     alt_user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
         "demo_summary": grounding_components["demo_summary"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code,
         "new_description": grounding_components["next_description"],
         "setup_description": env_info.setup_description
@@ -104,7 +104,7 @@ def rosetta_lh(
         "setup_description": env_info.setup_description,
         "info_keys": env_info.info_keys,
         "task_description": grounding_components["task_description"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "demo_summary": grounding_components["demo_summary"],
         "new_description": grounding_components["next_description"]
     })
@@ -112,10 +112,10 @@ def rosetta_lh(
     default_save_msg_hist(user_code_msg, hist, hist_f)
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
 
-    # Step 8: run api, get feedback code assistant message 
+    # Step 8: run api, get preference code assistant message 
     asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
 
-    # Step 9: add feedback code asst message to history and update function dict 
+    # Step 9: add preference code asst message to history and update function dict 
     default_save_msg_hist(asst_code_msg, hist, hist_f)
     default_save_msg_hist(asst_code_msg, debug_hist, debug_f)
 

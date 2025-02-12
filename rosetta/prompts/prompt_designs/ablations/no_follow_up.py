@@ -1,7 +1,7 @@
 import copy
 import inspect
 
-from rosetta.prompts.grounding import ground_feedback
+from rosetta.prompts.grounding import ground_preference
 from rosetta.prompts.iterative_error_correction import o1mini_error_loop
 from rosetta.prompts.prompt_message import PromptMessage
 from rosetta.prompts.utils import *
@@ -29,8 +29,8 @@ def no_follow_up(
     funcs_to_overwrite = FUNCS_TO_OVERWRITE[act_space]
 
     # PHASE 1: GROUNDING 
-    # Step 1: ground feedback 
-    grounding_components = ground_feedback(
+    # Step 1: ground preference 
+    grounding_components = ground_preference(
         demo_dir,
         human_input,
         env_id,
@@ -41,14 +41,14 @@ def no_follow_up(
 
     # Phase 1: gpt-4o plan
 
-    # Step 1: add feedback CoT reward system message to history 
-    print("Starting Step 1: Add feedback CoT reward system message to history")
+    # Step 1: add preference CoT reward system message to history 
+    print("Starting Step 1: Add preference CoT reward system message to history")
     system_msg = PromptMessage(role="system", content=get_prompt_content(f"{content_version}/fr_system"))
     default_save_msg_hist(system_msg, hist, hist_f)
     default_save_msg_hist(system_msg, debug_hist, debug_f)
     print("Completed Step 1")
 
-    # Step 2: add feedback plan user message to history 
+    # Step 2: add preferencecece plan user message to history 
     # Prepare environment code
     raw_env_code = inspect.getsource(ENV_ID_TO_SIM_CLS[env_id])
     env_code = prep_env_code(
@@ -64,15 +64,15 @@ def no_follow_up(
     user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
         "demo_summary": grounding_components["demo_summary"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code
     })
     default_save_msg_hist(user_plan_msg, hist, hist_f)
     default_save_msg_hist(user_plan_msg, debug_hist, debug_f)
     print("Completed Step 2")
 
-    # Step 3: run api, get feedback plan assistant message from gpt-4o
-    print("Starting Step 3: Run API to get feedback plan assistant message from gpt-4o")
+    # Step 3: run api, get preference plan assistant message from gpt-4o
+    print("Starting Step 3: Run API to get preference plan assistant message from gpt-4o")
     asst_plan_msg = query_until_complete(client, hist, "gpt-4o", params)
     print("Completed Step 3")
 
@@ -84,7 +84,7 @@ def no_follow_up(
     alt_user_plan_msg.fill_dynamic_fields({
         "task_description": task_description,
         "demo_summary": grounding_components["demo_summary"],
-        "grounded_feedback": grounding_components["grounded_feedback"],
+        "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code
     })
     hist[0] = alt_user_plan_msg
@@ -111,13 +111,13 @@ def no_follow_up(
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
     print("Completed Step 6")
 
-    # Step 7: run api, get feedback code assistant message 
-    print("Starting Step 7: Run API to get feedback code assistant message from o1-mini")
+    # Step 7: run api, get preference code assistant message 
+    print("Starting Step 7: Run API to get preference code assistant message from o1-mini")
     asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
     print("Completed Step 7")
 
-    # Step 8: add feedback code asst message to history and update function dict 
-    print("Starting Step 8: Add feedback code assistant message to history and update functions")
+    # Step 8: add preference code asst message to history and update function dict 
+    print("Starting Step 8: Add preference code assistant message to history and update functions")
     default_save_msg_hist(asst_code_msg, hist, hist_f)
     default_save_msg_hist(asst_code_msg, debug_hist, debug_f)
     latest_funcs = update_latest_funcs(asst_code_msg, latest_funcs)
@@ -157,5 +157,5 @@ def no_follow_up(
     hist[-1] = asst_corrected_code_msg
     print("Completed Step 11: error code is corrected")
 
-    return {"feedback": human_input}, latest_funcs, all_funcs, num_stages
+    return {"preference": human_input}, latest_funcs, all_funcs, num_stages
 

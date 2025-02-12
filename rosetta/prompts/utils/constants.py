@@ -1,8 +1,8 @@
 import pathlib
 
 import rosetta.prompts
-from feedback_to_reward.maniskill.customized_tasks import *
-from feedback_to_reward.maniskill.curriculum_learning.customized_tasks import *
+from preference_to_reward.maniskill.customized_tasks import *
+from preference_to_reward.maniskill.curriculum_learning.customized_tasks import *
 
 # Info 
 MANISKILL_ILLEGAL_EDIT_FUNCTIONS = {

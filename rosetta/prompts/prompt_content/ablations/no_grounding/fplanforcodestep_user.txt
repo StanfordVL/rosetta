@@ -29,7 +29,7 @@ $environment_code
 ```
 
 ### Human feedback
-$original_feedback
+$original_preference
 
 Make a high-level plan for rewriting `evaluate` and `compute_dense_reward`. The plan should be a series of stages.
 - Don't code yet, just plan the stages.

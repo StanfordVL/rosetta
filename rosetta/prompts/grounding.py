@@ -203,9 +203,9 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
     return description
 
 
-# Step 2: ground feedback
+# Step 2: ground preference
 
-def prompt_ground_feedback(demo_description, original_feedback, task_description, client, temperature):
+def prompt_ground_preference(demo_description, original_preference, task_description, client, temperature):
     
     demo_string = ""
     for description_key, description_value in demo_description.items():
@@ -213,16 +213,16 @@ def prompt_ground_feedback(demo_description, original_feedback, task_description
 
     ground_system_msg = PromptMessage(
         role="system",
-        content=get_prompt_content("grounding/ground_feedback_system")
+        content=get_prompt_content("grounding/ground_preference_system")
     )
     ground_user_msg = PromptMessage(
         role="user",
-        content=get_prompt_content("grounding/ground_feedback_user")
+        content=get_prompt_content("grounding/ground_preference_user")
     )
     ground_user_msg.fill_dynamic_fields({
         "task_description": task_description,
         "video_description": demo_string,
-        "original_feedback": original_feedback
+        "original_preference": original_preference
     })
     hist = [ground_system_msg, ground_user_msg]
     params = {
@@ -235,7 +235,7 @@ def prompt_ground_feedback(demo_description, original_feedback, task_description
     return query_until_complete(client, hist, "gpt-4o", params)
 
 
-def prompt_new_description(demo_description, task_description, grounded_feedback, client, temperature):
+def prompt_new_description(demo_description, task_description, grounded_preference, client, temperature):
 
     new_desc_system_msg = PromptMessage(
         role="system", 
@@ -248,7 +248,7 @@ def prompt_new_description(demo_description, task_description, grounded_feedback
     new_desc_user_msg.fill_dynamic_fields({
         "task_description": task_description,
         "demo_description": demo_description,
-        "grounded_feedback": grounded_feedback
+        "grounded_preference": grounded_preference
     })
     hist = [new_desc_system_msg, new_desc_user_msg]
     params = {
@@ -262,9 +262,9 @@ def prompt_new_description(demo_description, task_description, grounded_feedback
     return query_until_complete(client, hist, "gpt-4o", params)
 
 
-def ground_feedback(
+def ground_preference(
     demo_dir,
-    feedback_text,
+    preference_text,
     env_id,
     act_space,
     client,
@@ -279,16 +279,16 @@ def ground_feedback(
     
     # Get step-by-step demo description
     if ("description_exists" not in kwargs) or (not kwargs["description_exists"]): 
-        feedback_file = os.path.join(demo_dir, "feedback.txt")
+        preference_file = os.path.join(demo_dir, "preference.txt")
         try: 
-            with open(feedback_file, "w") as f:
-                f.write(feedback_text)
+            with open(preference_file, "w") as f:
+                f.write(preference_text)
         # TODO remove if possible.
         except FileNotFoundError: 
             legacy_demo_dir = Path(demo_dir).parent / "episode_0"
-            legacy_feedback_file = legacy_demo_dir / "feedback.txt"
-            with open(legacy_feedback_file, "w") as f:
-                f.write(feedback_text)
+            legacy_preference_file = legacy_demo_dir / "preference.txt"
+            with open(legacy_preference_file, "w") as f:
+                f.write(preference_text)
         
         demo_description = demo_to_language_description(
             demo_dir=demo_dir,
@@ -305,23 +305,23 @@ def ground_feedback(
         with open(descrip_fn, "r") as f: 
             demo_description = json.load(f)
     
-    # Get grounded feedback and demo summary
-    output = prompt_ground_feedback(
+    # Get grounded preference and demo summary
+    output = prompt_ground_preference(
         demo_description,
-        feedback_text,
+        preference_text,
         task_description, 
         client=client,
         temperature=temperature
     ) 
     
-    # Get new task description based on this feedback, for use in the *next* round
+    # Get new task description based on this preference, for use in the *next* round
     new_task_description = prompt_new_description(
         demo_description=demo_description,
         task_description=task_description,
-        grounded_feedback=output["feedback"],
+        grounded_preference=output["preference"],
         client=client,
         temperature=temperature
     )
     output["next_description"] = new_task_description
-    output["original_feedback"] = feedback_text
+    output["original_preference"] = preference_text
     return output
