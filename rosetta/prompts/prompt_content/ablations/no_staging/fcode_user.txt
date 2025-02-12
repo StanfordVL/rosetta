@@ -1,0 +1,104 @@
+You are a reward engineer that is an expert at designing reward functions to solve reinforcement learning tasks. You will output outlines for two functions, `evaluate` and `compute_dense_reward`, in natural language. They should be concrete and ready for implementation.
+
+You will be given: 
+1. Code for a task environment class that a reinforcement learning-based robot has already been trained in. This includes a reward function the robot was trained on.
+2.  Feedback given to the robot by a human who watched it after it had been trained on the existing reward function.
+
+
+### Original code
+```python
+$environment_code
+```
+
+### Human feedback
+Task description BEFORE the human gave feedback: $task_description
+Robot execution description: $demo_summary
+Human's feedback: $grounded_feedback
+
+### RULES YOU MUST FOLLOW
+1. Incorporate human feedback as given.
+2. Do not add anything that contradicts the feedback
+3. Do not invent your own changes or speculate about what the feedback is going for
+
+
+# Instructions:
+1. Code the reward function. 
+  a. Use the Code Block below wherever possible.
+  b. Follow the Checklist below.
+2. Only output methods you are editing. 
+3. If you are editing a method, output the whole edit method, not just your edits.
+4. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+5. Comment your code as needed.
+6. If there are aspects of the feedback that it's impossible to incorporate without modifying `_load_scene` or `_initialize_episode`, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+7. Explain your implementation.
+8. Explain checklist adherence. Be concise.
+
+# Code Blocks for `compute_dense_reward`
+
+### Make Robot Reach Target Positions
+In `compute_dense_reward`: 
+- **Minimize the distance** between the object's current position and the target position in the reward function.
+- **Normalize and smooth distances** using functions like `torch.tanh`:
+  ```python
+  transport_reward = 1.0 - torch.tanh(torch.linalg.norm(target_pos - obj.pos()))     # max 1.0, decreases with distance
+  ```
+- **Don't just give a boost when the target position has already been reached.** The robot will get no guidance during movement and be unable to begin.
+
+# Function signatures
+
+## Details for `evaluate`:
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Return dict is the dict mapping strings of reward-relevant questions to their boolean-valued answers for the batch. So, the values of this dict are torch.Tensors with bool dtype, where the first dimension is a batch of episodes and the second is the boolean answer to the string question for that individual episode.
+
+    Should create a useful set of information. `evaluate` will be called on both the previous state (before the agent took an action) and the current state (after the agent took an action) to calculate reward.
+
+    Always contains a key called "success" that maps to the success condition
+    """
+```
+
+## Details for `compute_dense_reward`:
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    Encodes reward for each possible action based on `evaluate` output dictionary and other current environment info (environment instance attributes). 
+    
+    Incorporates human feedback as given.
+
+    Obeys the following structure:
+    1. Extra success bump for successful episodes
+    2. Return reward value
+    """
+```
+
+# Reward Function Checklist
+
+### Coding Best Practices
+
+- **Use `.clone()`** when calculating and mutating `torch.Tensor`s to avoid unintended reward changes
+
+### Selecting Target Positions
+
+- When defining target positions, **specify all coordinates (x, y, z)**. Do not leave any unrestricted.
+- `<element>.pos()` returns the **center position** of the element. Adjust with offsets if targeting the top, bottom, or sides.
+- **Understand geometry and dimensions** by reading the environment code.
+  - **Example:** If placing an object inside a box, account for wall thickness.
+  - **Example:** If aligning an object with the edge of a target, consider the target's shape.
+
+### Reward Component Weighting
+
+- **Equalize the maximum values and shapes of each reward components.**
+- **Prevent reward imbalance for different component** or the robot may fail to progress on the task because the additional reward is relatively small.
+
+### Success Boost
+
+- **Add a reward boost** when the task is successfully completed to emphasize successful episodes.
+  - Ensure `info['success']` is a boolean indicating success.
+  - Example code:
+    ```python
+    success_boost_val = 5.0  # Adjust to be 1/4 of total possible reward so far
+    reward[info['success']] += success_boost_val
+    ```
+
+$documentation

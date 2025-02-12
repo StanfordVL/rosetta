@@ -1,0 +1,135 @@
+# Instructions
+
+You are a reward engineer that is an expert at coding reward functions to solve reinforcement learning tasks. You will write code for two functions, `evaluate` and `compute_dense_reward`.
+
+You will be given: 
+1. Documentation for a task environment class.
+2. A checklist of domain knowledge about writing reward functions.
+3. Code for the task environment instance that a reinforcement learning-based robot has already been trained in, including the prior reward function.
+4. Feedback given to the robot by a human who watched it after it had been trained on the existing reward function.
+5. New implementation plans for each function, written to incorporate the feedback. The `compute_dense_reward` plan consists of concrete stages for a **staged** reward. The `evaluate` plan outlines info to support `compute_dense_reward`. 
+
+Instructions: 
+1. Code the reward function based on the stage plan. 
+  a. Use the Code Block below wherever possible.
+  b. Follow the Checklist below. 
+2. Only output methods you are editing.
+3. If you are editing a method, output the whole edit method, not just your edits.
+4. Comment your code as needed.
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+6. If there are aspects of the feedback that it's impossible to incorporate without modifying parts of the code other than `compute_dense_reward` and `evaluate`, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+7. Explain your implementation.
+8. Explain checklist adherence. Be concise.
+
+# Code Blocks for `compute_dense_reward`
+
+### Make Robot Reach Target Positions
+In `compute_dense_reward`: 
+- **Minimize the distance** between the object's current position and the target position in the reward function.
+- **Normalize and smooth distances** using functions like `torch.tanh`:
+  ```python
+  transport_reward = 1.0 - torch.tanh(torch.linalg.norm(target_pos - obj.pos()))     # max 1.0, decreases with distance
+  ```
+- **Don't just give a boost when the target position has already been reached.** The robot will get no guidance during movement and be unable to begin.
+
+$documentation
+
+# Reward Function Checklist
+
+### Coding Best Practices
+
+- **Use `.clone()`** when calculating and mutating `torch.Tensor`s to avoid unintended reward changes
+
+### Selecting Target Positions
+
+- When defining target positions, **specify all coordinates (x, y, z)**. Do not leave any unrestricted.
+- `<element>.pos()` returns the **center position** of the element. Adjust with offsets if targeting the top, bottom, or sides.
+- **Understand geometry and dimensions** by reading the environment code.
+  - **Example:** If placing an object inside a box, account for wall thickness.
+  - **Example:** If aligning an object with the edge of a target, consider the target's shape.
+
+### Staged Reward Masking
+
+- **Use torch masking** to activate rewards for a stage **only after** its prerequisites are met.
+- **Example**: Two stages—(1) grasp `bottleA`, (2) move `bottleA` to `boxA`
+  ```python
+  # Assume 'is_bottleA_on_boxA' and 'is_bottleA_grasped' are in info and the target position for `bottleA` is defined
+  # Stage 2 reward - moving `bottleA` to `boxA`
+  move_reward = torch.tanh(torch.linalg.norm(target_pos - bottleA.pos()))
+  
+  # Reward moving `bottleA` to its target position `target_pos` only after it's grasped
+  reward[info['is_bottleA_grasped']] += move_reward[info['is_bottleA_grasped']]
+  ```
+- **Mask based on completed stages**, not the current one. Example of bad masking:
+  ```python
+  # Incorrect: Masking on the current stage's completion
+  reward[info['is_bottleA_on_boxA']] += move_reward[info['is_bottleA_on_boxA']]
+  # This fails because it doesn't reward reducing the distance between `bottleA` to `boxA` until the distance is zero. The robot therefore doesn't get dense process reward.
+  ```
+- **Don't reward conflicting stages simultaneously**.
+- **Maintain non-decreasing rewards** to encourage progression.
+  - **Example:** If the robot must grasp `objectA`, place it, ungrasp, then grasp `objectB`:
+    - Continue rewarding the grasp of `objectA` even when it's being placed.
+    - Mask the reward for grasping `objectB` based on `objectA` being at the target location, not whether `objectA` is grasped.
+
+### Reward Component Weighting
+
+- **Equalize the maximum values and shapes of each stage's reward components.**
+- **Prevent reward imbalance for different stages** or the robot may fail to progress on the task because the additional reward is relatively small.
+
+### Success Boost
+
+- **Add a reward boost** when the task is successfully completed to emphasize successful episodes.
+  - Ensure `info['success']` is a boolean indicating success.
+  - Example code:
+    ```python
+    success_boost_val = 5.0  # Adjust to be 1/4 of total possible reward so far
+    reward[info['success']] += success_boost_val
+    ```
+
+# Function signatures
+
+## Details for `evaluate`:
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Return dict is the dict mapping strings of reward-relevant questions to their boolean-valued answers for the batch. So, the values of this dict are torch.Tensors with bool dtype, where the first dimension is a batch of episodes and the second is the boolean answer to the string question for that individual episode.
+
+    Should create a useful set of information. `evaluate` will be called on both the previous state (before the agent took an action) and the current state (after the agent took an action) to calculate reward.
+
+    Always contains a key called "success" that maps to the success condition
+    """
+```
+
+## Details for `compute_dense_reward`:
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    Encodes reward for each possible action based on `evaluate` output dictionary and other current environment info (environment instance attributes). 
+    
+    Incorporates human feedback as given.
+
+    Obeys the following structure:
+    1. Stage reward 
+      - Task is split into stages and reward is given to the agent gradually, encouraging it to complete each stage. The reward accumulates. Each stage's reward is dense wherever possible.
+      - Interdependencies and tradeoffs between different task stages and different aspects of feedback and overall goal are considered. Reward design is not overall counterproductive to meet short-term goals.
+    2. Extra success bump for successful episodes
+    3. Return reward value
+    """
+```
+
+# Info for your implementation
+
+### Original code
+```python
+$environment_code
+```
+
+### Human feedback
+Task description BEFORE the human gave feedback: $task_description
+Robot execution description: $demo_summary
+Human's feedback: $grounded_feedback
+
+### Plan
+
+$plan

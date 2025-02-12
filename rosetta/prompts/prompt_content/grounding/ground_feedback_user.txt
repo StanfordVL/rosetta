@@ -1,0 +1,41 @@
+# Feedback grounding examples
+UNGROUNDED FEEDBACK 1: Not that one!
+GROUNDED FEEDBACK 1: The robot moved Blue Cube to the right. It should not - it should move Red Cube to the right.
+EXPLANATION 1: The person says "not that one" and there are two cubes in the scene, meaning they appear to have liked the action, but not the specific cube it was being done on. So, I added in direct references to the Blue Cube and the Red Cube. Since it was the Blue Cube that was moved to the right and the person clearly wanted the other option, I said not to do that and to instead move the Red Cube to the right.
+
+UNGROUNDED FEEDBACK 2: Hmmm, I like that the it move arm like that and put banana smoothly? but can it put banana in another one? 
+GROUNDED FEEDBACK 2: Arm movement is good, but put Banana in Shelf 2, Shelf 3, or Shelf 4.
+EXPLANATION 2: The person likes the arm movement. They want the banana to be put in another "one" - since it was previously put on a shelf, this means they want it put in a different shelf. Previously it was shelf 1, so now I ask for Shelves 2, 3, or 4. They also liked the way the robot put the Banana in Shelf 1, but now they're asking for it to be put in a different one, so even though they liked it previously, I don't ask for that now.
+
+UNGROUNDED FEEDBACK 3: the block can go further
+GROUNDED FEEDBACK 3: Move Cube 1 further to the right.
+EXPLANATION 3: The person referenced a "block". There's nothing in the description called a "block", but there is a "cube", which is a synonym. They want it moved further but don't specify where, which suggests they want it moved further in the original direction. That was to the right, so I preserve that here.
+
+# Task description
+$task_description
+
+# Video description
+$video_description
+
+# Feedback
+"$original_feedback"
+
+# Your task
+1. Think step by step to briefly summarize the demonstration, then go through the checklist, then give me your final version of the feedback, grounded to the description.
+2. Make sure your grounded feedback has a directive tone. 
+3. Use standard, unambiguous language over using the person's own language.
+4. Do not have ANY ambiguous objects. ALWAYS use the official term for an object if it has one.
+
+CHECKLIST: 
+- The feedback may not be ordered, even if it contains multiple parts. Did you assume order inappropriately?
+- The person might compliment something about the past. Don't conflate that with what they're asking for *now*. Did you make sure to isolate only the current instructions, and remove things they like but don't want to keep?
+- The person will NEVER reference something not in the video. If they use a word you don't think is in the video, YOU ARE WRONG. Did you figure out what they were talking about? Did you replace any unexpected terms with official terms from the description?
+
+NOTE: never ask the robot to "release" an object. Tell it to place it directly in the right location.
+
+# Output
+JSON format:
+{
+    "summary": "<SUMMARY>",
+    "feedback": "<GROUNDED FEEDBACK>",
+}

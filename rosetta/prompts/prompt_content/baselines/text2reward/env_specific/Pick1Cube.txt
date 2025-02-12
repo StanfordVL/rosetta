@@ -1,0 +1,6 @@
+class PickCubeEnv(BaseEnv):
+    self.cubeA : RigidObject # cube in the environment
+    self.cube_half_size = 0.02  # in meters
+    self.goal_thresh = 0.025 # in meters
+    self.agent : PandaRobot # a Franka Panda robot
+    self.goal_site : TargetObject # 3D goal site in the environment

@@ -1,0 +1,6 @@
+Given the image from a robotic simulation, write a caption describing the scene.
+Your response should be similar to the following examples:
+EXAMPLE 1: A robot gripper hovers above a wooden table, holding a green cube, while a red cube and a purple ball rest on the table surface.
+EXAMPLE 2: The robot is holding a green ball above the table. There are two cubes stacked together on the table. The red cube is on top of the purple cube.
+
+$env_setup_description + $env_state_str Objects do not float. If an object is elevated, it is either held by the robot or stacked on top of another object.

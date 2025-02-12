@@ -1,0 +1,12 @@
+class PlaceSphere2BinWideEnv(BaseEnv):
+    self.radius = 0.02 # radius of the sphere
+    self.agent : PandaRobot # a Franka Panda robot
+    self.bin_base_half_len = 0.08 # half side length of the bin's bottom block
+    self.bin_base_half_height = 0.005 # half height of the bin's bottom block
+    self.bin_wall_half_thickness = 0.005 # half thickness of the bin's walls
+    self.bin_wall_half_height = 0.005 
+    self.bin_wall_half_length = 2 * bin_wall_half_thickness + bin_base_half_len
+    self.bin_wall_half_size = [bin_wall_half_thickness, bin_base_half_len, 2*bin_wall_half_height] # The wall block size of the bin: the list represents the half length of the block along the [x, y, z] axis respectively.
+    self.obj : RigidObject # sphere in the environment
+    self.bin1 : RigidObject # the first bin in the environment
+    self.bin2 : RigidObject # the second bin in the environment

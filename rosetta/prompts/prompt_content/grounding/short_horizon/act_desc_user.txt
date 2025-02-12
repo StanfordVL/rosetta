@@ -1,0 +1,13 @@
+Your job is to generate a langauge description of a robot's action based on (1) START STATE: a dictionary containing the state and position of objects before the action, (2) START STATE DESCRIPTION: the language description of the start state, (3) END STATE: a dictionary containing the state and position of objects after the action, and (4) END STATE DESCRIPTION: the language description of the end state.
+Environment description: $env_setup_description
+
+EXAMPLE 1: The robot released the blue cube on top of the green cube.
+EXAMPLE 2: The robot picks up the blue cube.
+
+Here are the inputs:
+START STATE: $start_state_coordinate
+START_STATE_DESCRIPTION: $start_state_language_description
+END STATE: $end_state_coordinate
+END STATE DESCRIPTION: $end_state_language_description
+
+Now generate a description of the robot's action. Focus on the coordinates. State description might be wrong.

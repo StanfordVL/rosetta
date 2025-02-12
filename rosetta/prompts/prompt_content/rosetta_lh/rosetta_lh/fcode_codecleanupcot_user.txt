@@ -1,0 +1,7 @@
+- Did you make sure not to include return statements in all `compute_target_position_stageN` and `compute_target_pos_reward_stageN`, and instead just define `target_pos` and `reward`, respectively?
+- Did you set any new instance variables, i.e. did you create any new `self.<varname>`? You should not - you should just set `target_pos` and `reward` as regular variables. I will handle the rest.
+- Did you use the right datatypes? All positions should be numpy arrays of shape (3,), rewards should be floats, and `stageN_success` returns boolean.
+
+Verify. If you need to make any edits, do so.
+1. Only output functions you are editing.
+2. If you are editing a function, output the whole thing. Only do so once, with all corrections made.

@@ -1,0 +1,42 @@
+## Original code: 
+```python
+$environment_code
+```
+
+## Human feedback
+Task description BEFORE the human gave feedback: $task_description
+Robot execution description: $demo_summary
+Human's feedback: $grounded_feedback
+
+
+## Instructions
+Think step-by-step to make a high-level plan for rewriting `evaluate` and `compute_dense_reward`. The plan should be a series of stages.
+- Don't code yet, just plan the stages.
+- Consider dependencies and conflicts between task stages, and create a plan that doesn't do anything counterproductive.
+- Carefully consider the physical aspects of the task. 
+  - Plan realistic paths
+  - Consider the physical state the robot is in after each stage. Write the next stage to build directly on it.
+
+
+## RULES YOU MUST FOLLOW:
+1. Incorporate human feedback as given.
+2. Do not add anything that contradicts the feedback.
+3. Do not invent your own changes or speculate about what the feedback is going for.
+4. Do not add anything counterproductive to the overall goal.
+5. Make every stage atomic. 
+6. Make the plan complete - think about all the atomic stages the robot needs to achieve every part of the feedback, not just the final ones.
+7. NEVER ask the robot to release an object from the gripper. 
+8. NEVER ask the robot to first move above the desired location, below desired location, then release or lower down or move up. Just have it go straight to the desired location.
+
+## Output format: 
+
+```markdown 
+<Thought process>
+## Plan 
+<Plan>
+
+## End Of Plan
+
+## Explanation
+<Explanation if needed>
+```

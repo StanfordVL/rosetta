@@ -1,0 +1,32 @@
+class PandaRobot:
+    self.tcp.pose.p: torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the 3D position of the robot's gripper
+    self.tcp.pose.q: torch.Tensor([num_env, 4]) # Batched by the number of environment, indicate the quaternion of the robot's gripper
+    self.robot.qpos: torch.Tensor([num_env, 9]) # Batched by the number of environment, indicate the joint positions (last 2 for gripper) of the robot at this key frame
+    self.robot.qvel: torch.Tensor([num_env, 9]) # Batched by the number of environment, indicate the joint velocities (last 2 for gripper) of the robot at this key frame
+    def is_grasping(self, object: Actor, min_force=0.5, max_angle=85): -> torch.Tensor([num_env, ], bool) # Batched by the number of environment, check if the robot is grasping an object
+
+class RigidObject:
+    self.pose.p: torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the 3D position of the simple rigid object in each environment
+    self.pose.q: torch.Tensor([num_env, 4]) # Batched by the number of environment, indicate the quaternion of the simple rigid object in each environment
+    def get_angular_velocity(self,) -> torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the angular velocity of the simple rigid object
+    def get_linear_velocity(self,) -> torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the linear velocity of the simple rigid object
+    self.get_first_collision_mesh().bounding_box.bounds: np.ndarray[(2, 3)] # non-batched, indicate the bounding box of the simple rigid object
+
+class TargetObject:
+    self.pose.p: torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the 3D position of the TargetObject in each environment
+    self.pose.q: torch.Tensor([num_env, 4]) # Batched by the number of environment, indicate the quaternion of the TargetObject in each environment
+
+class LinkObject:
+    self.pose.p: torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the 3D position of the link object in each environment
+    self.pose.q: torch.Tensor([num_env, 4]) # Batched by the number of environment, indicate the quaternion of the link object in each environment
+    def get_angular_velocity(self,) -> torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the angular velocity of the link object
+    def get_linear_velocity(self,) -> torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the linear velocity of the link object
+    self.qpos : torch.Tensor([num_env,],float) # Batched by the number of environment, indicate the position of the link object joint
+    self.qvel : torch.Tensor([num_env,],float) # Batched by the number of environment, indicate the velocity of the link object joint
+
+class ArticulateObject:
+    self.pose.p: torch.Tensor([num_env, 3]) # Batched by the number of environment, indicate the 3D position of the articulate object in each environment
+    self.pose.q: torch.Tensor([num_env, 4]) # Batched by the number of environment, indicate the quaternion of the articulate object in each environment
+    self.qpos : torch.Tensor([num_env, 9]) # Batched by the number of environment, indicate the joint positions of the articulate object at this key frame
+    self.qvel : torch.Tensor([num_env, 9]) # Batched by the number of environment, indicate the joint velocities of the articulate object at this key frame
+    self.get_first_collision_mesh().bounding_box.bounds: np.ndarray[(2, 3)] # non-batched, indicate the bounding box of the articulate object

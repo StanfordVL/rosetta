@@ -1,0 +1,6 @@
+- Did you consider the range of your normalization functions correctly? Common pitfalls: make sure the range of the reward is -1 to 0.
+- Did you consider sensitivity thoughtfully? Common pitfalls: not having tolerance for small errors in the reward and success calculation.
+
+Verify. If you need to make any edits, do so.
+1. Only output functions you are editing.
+2. If you are editing a function, output the whole thing. Only do so once, with all corrections made.

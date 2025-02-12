@@ -1,0 +1,13 @@
+Review the setup description again:
+
+$setup_description
+
+- For every target position, did you specify all three coordinates?
+- Did you set target positions **exactly where you desire the robot to go**? Common pitfalls:
+- Adding a small error threshold to the target position. Always allow a bit of error when calculating a *boolean check* in `stageN_success`, but the target positions themselves should have no error. 
+- Did you reason about the dimensions of each object and how they might impact target positions?
+- Picking an object up requires positioning the gripper around the center of the object. Did you consider this? In other words, did you set the target position to the center of the object?
+
+Verify. If you need to make any edits, do so.
+1. Only output functions you are editing.
+2. If you are editing a function, output the whole thing. Only do so once, with all corrections made.

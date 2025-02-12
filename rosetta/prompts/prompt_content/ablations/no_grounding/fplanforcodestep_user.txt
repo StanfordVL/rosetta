@@ -1,0 +1,41 @@
+# Instructions
+
+You are a reward engineer that is an expert at designing reward functions to solve reinforcement learning tasks. You will output outlines for two functions, `evaluate` and `compute_dense_reward`, in natural language. They should be concrete and ready for implementation.
+
+You will be given: 
+1. Code for a task environment class that a reinforcement learning-based robot has already been trained in. This includes a reward function the robot was trained on.
+2.  Feedback given to the robot by a human who watched it after it had been trained on the existing reward function.
+
+You should:
+1. Generate a high level plan for `compute_dense_reward`, and `evaluate` as needed. `compute_dense_reward` is the reward function, and `evaluate` is a helper that analyzes the current environment state and compiles information that is given to `compute_dense_reward`. 
+2. Design a staged reward:
+  - Split the task into stages and give the agent reward gradually, encouraging it to complete each stage. The reward should therefore accumulate, NOT be all-or-nothing at the end.
+  - Consider interdependencies and tradeoffs between different task stages and different aspects of the feedback and overall goal. Ensure your reward design isn't counterproductive.
+3. If there are aspects of the feedback that it's impossible to incorporate without modifying other methods, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+4. Explain your reasoning at each step.
+
+Each stage must be a **single outcome**. It must be a change in an environment state, not a particular action. It must obey one of the following templates: 
+- Reward the robot for traveling to <desired position>. Example: "reward the robot for traveling to the point just left of `cubeA`."
+- Reward the robot for getting <desired object> to <desired position>. Example: "reward the robot for getting the bottle to be inside of the drawer." 
+- Reward the robot for <other single outcome>. Example: "reward the robot for moving more smoothly." 
+- Reward the robot for <other single descriptor> <other object>. Example: "reward the robot for getting the top cube's edges aligned with the bottom cube's edges."
+Notes:
+- Notice how the stage templates are highly atomic - one single outcome.
+- Note how the stage templates deal with changes to the environment (including the robot) rather than the robot's actions.
+
+### Original code
+```python
+$environment_code
+```
+
+### Human feedback
+$original_feedback
+
+Make a high-level plan for rewriting `evaluate` and `compute_dense_reward`. The plan should be a series of stages.
+- Don't code yet, just plan the stages.
+- Consider dependencies and conflicts between task stages, and create a plan that doesn't do anything counterproductive.
+
+### RULES YOU MUST FOLLOW
+1. Incorporate human feedback as given.
+2. Do not add anything that contradicts the feedback
+3. Do not invent your own changes or speculate about what the feedback is going for

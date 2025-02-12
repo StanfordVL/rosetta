@@ -1,0 +1,34 @@
+You will be given two functions that make up a reward function in a robot reinforcement learning environment. One, `compute_dense_reward`, computes the actual reward signal. The other, `evaluate`, compiles useful state information, including the success condition. You will also be given specific requirements, environment code, and documentation. Please verify whether the code incorporates the requirements and edit it if needed.
+
+Requirements to verify: 
+- Verify that the reward **never decreases** during the progression of the task, so that the robot isn't disincentivized from making progress.
+  - The code should only mask on genuine prerequisites 
+  - The reward should be enabled even when the stage is complete
+  - For example, if the robot needs to grasp an object to carry it to a location and then let it go, give the grasp reward not only when the gripper is ready to grasp, but also after the object has been carried to the location and ungrasped.
+- Verify that no stage reward components are masked prematurely.
+  - Example: reward component guides the robot to put `objA` next to `objB`. Masking this with `info["is_objA_next_to_objB"]` means it'll only get reward after it succeeds, so it will never get started.
+  - Example: reward component guides the robot to travel to point `target_pos`. Masking this with `info["is_near_target_pos"]` means it'll only get reward after it succeeds, so it will never get started.
+
+1. Write out your verification step-by-step.
+2. Edit the code as needed according to your explanation. Comment your changes. DO NOT change the function signatures.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole method, not just your edits. 
+5. Don't introduce new methods, not even helper methods. ONLY edit `compute_dense_reward` and `evaluate`. 
+
+# Current reward code 
+
+## `evaluate` 
+
+$evaluate 
+
+## `compute_dense_reward`
+
+$compute_dense_reward
+
+# Rest of environment 
+
+$env_code_no_reward 
+
+# Documentation 
+
+$documentation
