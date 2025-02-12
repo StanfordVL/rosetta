@@ -1,0 +1,1 @@
+from .prompt_designs import DESIGN_NAME_TO_FUNC
