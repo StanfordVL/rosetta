@@ -1,10 +1,10 @@
 import copy
 import inspect
 
-from feedback_to_reward_prompts.grounding import ground_feedback
-from feedback_to_reward_prompts.iterative_error_correction import o1mini_error_loop
-from feedback_to_reward_prompts.prompt_message import PromptMessage
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompts.grounding import ground_feedback
+from rosetta.prompts.iterative_error_correction import o1mini_error_loop
+from rosetta.prompts.prompt_message import PromptMessage
+from rosetta.prompts.utils import *
 
 
 def rosetta_sh(

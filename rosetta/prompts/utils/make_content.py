@@ -9,7 +9,7 @@ import os
 import re
 
 from .constants import *
-from feedback_to_reward_prompts.prompt_message import PromptMessage
+from rosetta.prompts.prompt_message import PromptMessage
 
 
 def get_prompt_content(prompt_name):

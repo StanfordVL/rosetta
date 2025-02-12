@@ -1,4 +1,4 @@
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompts.utils import *
 from .task import Task
 
 

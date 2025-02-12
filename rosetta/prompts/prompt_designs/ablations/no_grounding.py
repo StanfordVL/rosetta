@@ -1,9 +1,9 @@
 import copy
 import inspect
 
-from feedback_to_reward_prompts.utils import *
-from feedback_to_reward_prompts.iterative_error_correction import o1mini_error_loop
-from feedback_to_reward_prompts.prompt_designs.rosetta_sh.rosetta_sh import rosetta_sh
+from rosetta.prompts.utils import *
+from rosetta.prompts.iterative_error_correction import o1mini_error_loop
+from rosetta.prompts.prompt_designs.rosetta_sh.rosetta_sh import rosetta_sh
 
 
 def no_grounding(

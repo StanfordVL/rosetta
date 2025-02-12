@@ -1,6 +1,6 @@
-from feedback_to_reward_prompts.prompt_message import *
-from feedback_to_reward_prompts.prompt_designs import *
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompts.prompt_message import *
+from rosetta.prompts.prompt_designs import *
+from rosetta.prompts.utils import *
 
 
 DESIGN_NAME_TO_FUNC = {

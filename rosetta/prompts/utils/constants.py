@@ -1,6 +1,6 @@
 import pathlib
 
-import feedback_to_reward_prompts
+import rosetta.prompts
 from feedback_to_reward.maniskill.customized_tasks import *
 from feedback_to_reward.maniskill.curriculum_learning.customized_tasks import *
 
@@ -93,5 +93,5 @@ ENV_ID_TO_SIM_CLS = {
 
 
 # Result files 
-BACKUP_DIR = pathlib.Path(feedback_to_reward_prompts.__file__).parents[1] / "reward_backup"
-DEMO_DIR = pathlib.Path(feedback_to_reward_prompts.__file__).parents[1] / "demos"
+BACKUP_DIR = pathlib.Path(rosetta.prompts.__file__).parents[1] / "reward_backup"
+DEMO_DIR = pathlib.Path(rosetta.prompts.__file__).parents[1] / "demos"

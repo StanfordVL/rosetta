@@ -1,6 +1,6 @@
-from feedback_to_reward_prompts.utils.constants import *
-from feedback_to_reward_prompts.prompt_message import PromptMessage
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompts.utils.constants import *
+from rosetta.prompts.prompt_message import PromptMessage
+from rosetta.prompts.utils import *
 
 
 def get_error_data(

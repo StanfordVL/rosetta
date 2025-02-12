@@ -1,5 +1,5 @@
 import openai 
-from feedback_to_reward_prompts.prompt_message import PromptMessage
+from rosetta.prompts.prompt_message import PromptMessage
 
 
 def query_until_complete(

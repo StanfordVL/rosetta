@@ -2,9 +2,9 @@ import copy
 import inspect
 import traceback
 
-from feedback_to_reward_prompts.iterative_error_correction import o1mini_error_loop_ro
-from feedback_to_reward_prompts.prompt_message import PromptMessage
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompts.iterative_error_correction import o1mini_error_loop_ro
+from rosetta.prompts.prompt_message import PromptMessage
+from rosetta.prompts.utils import *
 
 
 def eureka(

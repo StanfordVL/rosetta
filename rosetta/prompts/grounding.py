@@ -5,8 +5,8 @@ import os
 from pathlib import Path
 from IPython.display import Video, display
 
-from feedback_to_reward_prompts.prompt_content.grounding.env_specific import ENV_ID_TO_GROUNDING_CLS
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompts.prompt_content.grounding.env_specific import ENV_ID_TO_GROUNDING_CLS
+from rosetta.prompts.utils import *
 
 
 # Step 1: Language description of demo
