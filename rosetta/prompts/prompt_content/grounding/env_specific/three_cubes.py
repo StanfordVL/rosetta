@@ -2,7 +2,7 @@ from rosetta.prompts.utils import *
 from .prompt_env import PromptEnv
 
 
-class Stack3Cube(PromptEnv):
+class ThreeCubes(PromptEnv):
     def __init__(self):
         self.type = "long_horizon"
         self.description = "Stack 3 cubes on top of each other"

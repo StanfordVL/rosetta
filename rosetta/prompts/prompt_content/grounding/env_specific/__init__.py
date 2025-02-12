@@ -1,18 +1,18 @@
-from .stack3cube import Stack3Cube
-from .sphere2bin_short import Sphere2BinShort
-from .push_ball_short import PushBallShort
-from .object_to_bin import ObjectToBin
-from .put_object_in_drawer import PutObjectInDrawer
-from .pull_cube_short import PullCubeShort
-from .pick_cube_short import PickCubeShort
+from .ThreeCubes import ThreeCubes
+from .sphere_and_bins import SphereAndBins
+from .ball_and_target import BallAndTarget
+from .objects_and_bins import ObjectsAndBins
+from .objects_and_drawer import ObjectsAndDrawer
+from .cube_and_target import CubeAndTarget
+from .cube_and_point import CubeAndPoint
 
 
 ENV_ID_TO_GROUNDING_CLS = {
-    "PlaceSphere2BinWide": Sphere2BinShort,
-    "PushBall": PushBallShort,
-    "Stack3Cube": Stack3Cube,
-    "ObjectToBin": ObjectToBin,
-    "PutObjectInDrawer": PutObjectInDrawer,
-    "Pull1Cube":PullCubeShort,
-    "Pick1Cube":PickCubeShort
+    "SphereAndBins": SphereAndBins,
+    "BallAndTarget": BallAndTarget,
+    "ThreeCubes": ThreeCubes,
+    "ObjectsAndBins": ObjectsAndBins,
+    "ObjectsAndDrawer": ObjectsAndDrawer,
+    "CubeAndTarget":CubeAndTarget,
+    "CubeAndPoint":CubeAndPoint
 }

@@ -1,4 +1,4 @@
-class Pull1CubeEnv(BaseEnv):
+class CubeAndTargetEnv(BaseEnv):
     self.obj : RigidObject # cube in the environment
     self.cube_half_size = 0.02  # in meters
     self.goal_radius = 0.1 # in meters

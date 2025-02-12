@@ -1,4 +1,4 @@
-class PlaceSphere2BinWideEnv(BaseEnv):
+class SphereAndBinsEnv(BaseEnv):
     self.radius = 0.02 # radius of the sphere
     self.agent : PandaRobot # a Franka Panda robot
     self.bin_base_half_len = 0.08 # half side length of the bin's bottom block
