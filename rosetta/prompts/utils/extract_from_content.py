@@ -4,6 +4,7 @@ Utils for extracting necessary content (plan, code, num stages) from FM assistan
 Includes util for building long-horizon function from generations, which are not the function's
     final form.
 '''
+import json
 import re
 import redbaron
 import textwrap

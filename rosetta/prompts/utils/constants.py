@@ -73,7 +73,7 @@ NUM_ERROR_CORR_TRIES = 10
 
 
 # Content files 
-PROMPT_DIR = "prompt_content"
+PROMPT_DIR = pathlib.Path(rosetta.prompts.__file__).parent / "prompt_content"
 
 ENV_ID_TO_SIM_CLS = {
     # Main short-horizon continuous control

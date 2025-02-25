@@ -61,7 +61,7 @@ def rosetta_sh_nohistory(
     user_plan_msg = PromptMessage(role="user", content=get_prompt_content(f"{content_version}/fplan_user"))
     user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
-        "demo_summary": grounding_components["demo_summary"],
+        "demo_summary": grounding_components["summary"],
         "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code
     })

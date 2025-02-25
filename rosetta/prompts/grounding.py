@@ -1,5 +1,5 @@
 import cv2
-from glob import glob
+import glob
 import json
 import os
 from pathlib import Path
@@ -39,7 +39,6 @@ def state_description(data, env, act_space, client, scale=1):
 
 
 def action_description(action_state, env, act_space, client):
-
     start_state_coordinate = env.state_str(action_state["start_state"])
     start_state_language_description = action_state["start_state"]["description"]
     end_state_coordinate = env.state_str(action_state["end_state"])
@@ -47,14 +46,18 @@ def action_description(action_state, env, act_space, client):
 
     system_actdesc_msg = PromptMessage(role="system", content=get_prompt_content(f"grounding/act_desc_system"))
     user_actdesc_msg = PromptMessage(role="user", content=get_prompt_content(f"grounding/{act_space}/act_desc_user"))
-    user_actdesc_msg.fill_dynamic_fields({
+    dynamic_fields = {
         "env_setup_description": env.setup_description,
         "start_state_coordinate": start_state_coordinate,
         "start_state_language_description": start_state_language_description,
         "end_state_coordinate": end_state_coordinate,
-        "end_state_language_description": end_state_language_description
-    })
-    
+        "end_state_language_description": end_state_language_description,
+        "action_description": action_description
+    }
+    if act_space == "actprim": 
+        dynamic_fields["action_description"] = action_description
+    user_actdesc_msg.fill_dynamic_fields(dynamic_fields)
+
     params = {
         "temperature": 0.1,
         "max_completion_tokens": 4096,
@@ -75,7 +78,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
                         file contains the state information for each step.
     """
 
-    env = ENV_ID_TO_GROUNDING_CLS[env_id]
+    env = ENV_ID_TO_GROUNDING_CLS[env_id]()
     # Load the demo data
     traj_dir = os.path.join(demo_dir, "trajectory.json")
     with open(traj_dir) as f:
@@ -84,7 +87,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
     if act_space == "actprim":
         # Load the video data
         video_dir = os.path.join(demo_dir, "video")
-        video_paths = glob(os.path.join(video_dir, "*.mp4"))
+        video_paths = glob.glob(os.path.join(video_dir, "*.mp4"))
         video_paths.sort(key=lambda x: int(x.split("/")[-1].split(".")[0].split("_")[-1]))
         num_steps = len(video_paths)
 
@@ -110,13 +113,13 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
             cv2.imwrite(end_frame_path, end_frame)
 
             traj[i*2]["image_path"] = start_frame_path
-            traj[i*2]["description"] = state_description(traj[i*2], client=client, env=env)
+            traj[i*2]["description"] = state_description(traj[i*2], act_space=act_space, client=client, env=env).content
 
             if verbose:
                 print(f"State {i} description: {traj[i*2]['description']}")
 
         traj[-1]["image_path"] = end_frame_path
-        traj[-1]["description"] = state_description(traj[-1], client=client, env=env)
+        traj[-1]["description"] = state_description(traj[-1], act_space=act_space, client=client, env=env).content
 
         if verbose:
             print(f"State {num_steps} description: {traj[-1]['description']}")
@@ -137,7 +140,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
             action_infos.append(action_info)
 
         for i in range(num_steps):
-            res = action_description(action_infos[i], act_space, client=client, env=env)
+            res = action_description(action_infos[i], act_space=act_space, client=client, env=env).content
             traj[i*2+1]["description"] = res
 
             if verbose:
@@ -162,7 +165,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
             
     elif act_space == "contcontrol":
         image_folder = os.path.join(demo_dir, "frames")
-        image_paths = glob(os.path.join(image_folder, "*.png"))
+        image_paths = glob.glob(os.path.join(image_folder, "*.png"))
         image_paths.sort(key=lambda x: int(x.split("/")[-1].split(".")[0].split("_")[-1]))
         num_frames = len(image_paths)
         assert len(traj) == num_frames, f"Mismatch between number of steps and number of frame files {len(traj)} != {num_frames}"
@@ -172,7 +175,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
         
         for i in range(num_frames):
             traj[i]["image_path"] = image_paths[i]
-            traj[i]["description"] = state_description(traj[i], client=client, env=env)
+            traj[i]["description"] = state_description(traj[i], act_space=act_space, client=client, env=env).content
             if verbose:
                 print(f"State {i} description: {traj[i]['description']}")
 
@@ -185,7 +188,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
                 "start_state": traj[i],
                 "end_state": traj[i+1]
             }
-            res = action_description(action_info, client=client, env=env)
+            res = action_description(action_info, act_space=act_space, client=client, env=env)
 
             description[f"state_{i}"] = traj[i]["description"]
             description[f"action_{i}"] = res
@@ -273,7 +276,7 @@ def ground_preference(
     temperature=0.1,
     **kwargs
 ):
-    env = ENV_ID_TO_GROUNDING_CLS[env_id]      # TODO get from env_id
+    env = ENV_ID_TO_GROUNDING_CLS[env_id]()
     if task_description is None: 
         task_description = env.description
     
@@ -295,9 +298,7 @@ def ground_preference(
             act_space=act_space,
             client=client,
             env_id=env_id,
-            model=model,
             verbose=True,
-            temperature=temperature
         )
     
     else:
@@ -306,13 +307,13 @@ def ground_preference(
             demo_description = json.load(f)
     
     # Get grounded preference and demo summary
-    output = prompt_ground_preference(
+    output = json.loads(prompt_ground_preference(
         demo_description,
         preference_text,
         task_description, 
         client=client,
         temperature=temperature
-    ) 
+    ).content)
     
     # Get new task description based on this preference, for use in the *next* round
     new_task_description = prompt_new_description(
@@ -322,6 +323,8 @@ def ground_preference(
         client=client,
         temperature=temperature
     )
+    output["grounded_preference"] = output.pop("feedback")
+    output["task_description"] = task_description
     output["next_description"] = new_task_description
     output["original_preference"] = preference_text
     return output

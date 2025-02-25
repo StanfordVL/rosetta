@@ -39,7 +39,7 @@ def rosetta_lh(
         client,
         task_description
     )    
-    env_info = ENV_ID_TO_GROUNDING_CLS[env_id]
+    env_info = ENV_ID_TO_GROUNDING_CLS[env_id]()
 
     # Phase 1: gpt-4o plan 
     # Step 1: add preference CoT reward system message to history
@@ -62,7 +62,7 @@ def rosetta_lh(
     user_plan_msg = PromptMessage(role="user", content=get_prompt_content(f"{content_version}/fplan_user"))
     user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
-        "demo_summary": grounding_components["demo_summary"],
+        "demo_summary": grounding_components["summary"],
         "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code,
         "new_description": grounding_components["next_description"],
@@ -82,7 +82,7 @@ def rosetta_lh(
     alt_user_plan_msg = PromptMessage(role="user", content=get_prompt_content(f"{content_version}/fplanforcodestep_user"))
     alt_user_plan_msg.fill_dynamic_fields({
         "task_description": grounding_components["task_description"],
-        "demo_summary": grounding_components["demo_summary"],
+        "demo_summary": grounding_components["summary"],
         "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code,
         "new_description": grounding_components["next_description"],
@@ -105,7 +105,7 @@ def rosetta_lh(
         "info_keys": env_info.info_keys,
         "task_description": grounding_components["task_description"],
         "grounded_preference": grounding_components["grounded_preference"],
-        "demo_summary": grounding_components["demo_summary"],
+        "demo_summary": grounding_components["summary"],
         "new_description": grounding_components["next_description"]
     })
 

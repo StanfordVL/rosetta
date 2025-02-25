@@ -57,7 +57,7 @@ def no_staging(
     user_code_msg.fill_dynamic_fields({
         "documentation": documentation,
         "task_description": grounding_components["task_description"],
-        "demo_summary": grounding_components["demo_summary"],
+        "demo_summary": grounding_components["summary"],
         "grounded_preference": grounding_components["grounded_preference"],
         "environment_code": env_code 
     })

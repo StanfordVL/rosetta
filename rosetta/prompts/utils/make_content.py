@@ -7,13 +7,12 @@ import inspect
 import os
 import re
 
-from .constants import *
 from rosetta.prompts.prompt_message import PromptMessage
+from rosetta.prompts.utils.constants import *
 
 
 def get_prompt_content(prompt_name):
-    prompt_dir = pathlib.Path(__file__).parent / PROMPT_DIR
-    with open(os.path.join(prompt_dir, prompt_name) + ".txt") as f:
+    with open(os.path.join(PROMPT_DIR, prompt_name) + ".txt") as f:
         prompt = f.read() 
     return prompt
 

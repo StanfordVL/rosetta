@@ -1,6 +1,6 @@
 import base64 
 import cv2
-import glob
+import glob.glob
 from IPython.display import Video, display
 import json
 import os
@@ -37,7 +37,7 @@ def image_path_to_base64(image_path, scale = 1):
 
 def show_traj(dir):
     video_dir = os.path.join(dir, "video")
-    video_paths = glob(os.path.join(video_dir, "*.mp4"))
+    video_paths = glob.glob(os.path.join(video_dir, "*.mp4"))
     video_paths.sort(key=lambda x: int(x.split("/")[-1].split(".")[0].split("_")[-1]))
     traj_dir = os.path.join(dir, "trajectory.json")
     with open(traj_dir) as f:
