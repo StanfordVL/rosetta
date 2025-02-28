@@ -3,10 +3,9 @@ import fire
 
 def run_in_separate_process(env_id=None, func_dict=None, json_path=None, num_envs=4, sim_backend="gpu", functions_to_overwrite=None):    
     try:
-        import feedback_to_reward.maniskill.customized_tasks
         import gymnasium as gym
         import traceback
-        from feedback_to_reward.maniskill.pipelines.reward_manipulator import RewardManipulator
+        from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
         if functions_to_overwrite is None:
             functions_to_overwrite = ['evaluate', 'compute_dense_reward', 'compute_normalized_dense_reward']
         rm = RewardManipulator(env_id=env_id, json_path=json_path, func_dict=func_dict,sim_backend=sim_backend)

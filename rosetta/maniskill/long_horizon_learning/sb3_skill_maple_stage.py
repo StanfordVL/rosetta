@@ -13,19 +13,19 @@ from stable_baselines3 import MAPLEStage, MAPLE
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, EveryNTimesteps
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
-from feedback_to_reward.maniskill.wrappers.skill_wrapper import SkillGymWrapper
+from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
-from feedback_to_reward.maniskill.wrappers.skill_wrapper import SkillGymWrapper
-from feedback_to_reward.maniskill.utils.utils import get_task_env_source, get_avail_save_path, get_modified_source
+from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
+from rosetta.maniskill.utils.utils import get_task_env_source, get_avail_save_path, get_modified_source
 from mani_skill.envs.sapien_env import BaseEnv
-from feedback_to_reward.maniskill.pipelines.reward_manipulator import RewardManipulator
+from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
 from stable_baselines3.common.noise import NormalActionNoise
 import time
 from stable_baselines3.maple.policies import MAPLEPolicy
-from feedback_to_reward.sb3.callbacks.reward_callback import RewardEvalCallback
-import feedback_to_reward.maniskill.long_env
+from rosetta.sb3.callbacks.reward_callback import RewardEvalCallback
+import rosetta.maniskill.long_env
 import timeout_decorator
-from feedback_to_reward.sb3.callbacks.early_stop_callback import EarlyStoppingEvalCallback
+from rosetta.sb3.callbacks.early_stop_callback import EarlyStoppingEvalCallback
 from copy import deepcopy
 
 @dataclass

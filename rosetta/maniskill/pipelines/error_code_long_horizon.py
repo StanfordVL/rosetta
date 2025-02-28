@@ -5,14 +5,14 @@ from copy import deepcopy
 
 def run_in_separate_process(env_id=None, func_dict=None, json_path=None, functions_to_overwrite=None, stage=0, target_action=0):
     try:
-        import feedback_to_reward.maniskill.long_env
-        import feedback_to_reward.maniskill.short_env
+        import rosetta.maniskill.long_env
+        import rosetta.maniskill.short_env
         import numpy as np
         import gymnasium as gym
         import traceback
         from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
-        from feedback_to_reward.maniskill.wrappers.skill_wrapper import SkillGymWrapper
-        from feedback_to_reward.maniskill.pipelines.reward_manipulator import RewardManipulator
+        from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
+        from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
         if functions_to_overwrite is None:
             functions_to_overwrite = ['skill_reward', 'evaluate']
         rm = RewardManipulator(env_id=env_id, json_path=json_path, func_dict=func_dict)
