@@ -13,7 +13,6 @@ from stable_baselines3 import MAPLE
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, EveryNTimesteps
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
-from rosetta.maniskill.customized_tasks import *
 from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
 from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
@@ -24,7 +23,6 @@ from stable_baselines3.common.noise import NormalActionNoise
 import time
 from stable_baselines3.maple.policies import MAPLEPolicy
 from rosetta.sb3.callbacks.reward_callback import RewardEvalCallback
-import rosetta.maniskill.curriculum_learning.customized_tasks
 import timeout_decorator
 from rosetta.sb3.callbacks.early_stop_callback import EarlyStoppingEvalCallback
 @dataclass

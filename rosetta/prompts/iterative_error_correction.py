@@ -1,5 +1,5 @@
-from feedback_to_reward.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon 
-from feedback_to_reward.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon 
+from rosetta.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon 
+from rosetta.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon 
 
 from rosetta.prompts.utils.constants import *
 from rosetta.prompts.prompt_message import PromptMessage

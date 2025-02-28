@@ -13,7 +13,6 @@ from stable_baselines3.maple.maple import MAPLE as MAPLE_YES_FAIL
 from stable_baselines3.common.callbacks import CallbackList, CheckpointCallback, EvalCallback, EveryNTimesteps
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
-from rosetta.maniskill.customized_tasks import *
 from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
 from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper

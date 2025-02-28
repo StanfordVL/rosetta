@@ -1,7 +1,7 @@
 
-from .place_sphere_2_bin_wide import PlaceSphere2BinWideEnv
+from .SphereAndBins import SphereAndBinsEnv
 
-from .push_ball import PushBallEnv
+from .BallAndTarget import BallAndTargetEnv
 
 from .stack_2_cube import Stack2CubeEnv
 
