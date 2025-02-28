@@ -16,8 +16,8 @@ from mani_skill.utils.structs.pose import Pose
 from mani_skill.utils.structs.types import SimConfig
 
 
-@register_env("Pick1Cube", max_episode_steps=50)
-class Pick1CubeEnv(BaseEnv):
+@register_env("CubeAndPoint", max_episode_steps=50)
+class CubeAndPointEnv(BaseEnv):
     """
     **Task Description:**
     A simple task where the objective is to grasp a red cube and move it to a target goal position.

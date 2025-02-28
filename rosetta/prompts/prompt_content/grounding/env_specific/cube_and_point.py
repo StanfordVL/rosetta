@@ -2,7 +2,7 @@ from rosetta.prompts.utils import *
 from .prompt_env import PromptEnv
 
 
-class CubeAndPoint(PromptEnv):
+class CubeAndTarget(PromptEnv):
     def __init__(self):
         self.description = "Pick a cube to goal position"
         self.setup_description = """There should be a robot gripper and a cube on the table.

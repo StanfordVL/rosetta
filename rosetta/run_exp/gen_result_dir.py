@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from openai import OpenAI
 from rosetta.run_exp.gen_reward import generate_reward
-from rosetta_prompts.utils.constants import BACKUP_DIR as backup_path 
+from rosetta.prompts.utils.constants import BACKUP_DIR as backup_path 
 from rosetta.run_exp.utils import generate_hash_uid, gen_uid_by_timestamp
 from rosetta.run_exp.env_config import ENV_CONFIG
 import traceback

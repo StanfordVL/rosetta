@@ -3,7 +3,7 @@ import pathlib
 import rosetta.prompts
 from rosetta.maniskill.short_env import *
 from rosetta.maniskill.long_env import *
-
+import os
 # Info 
 MANISKILL_ILLEGAL_EDIT_FUNCTIONS = {
     "__init__",
@@ -73,7 +73,8 @@ NUM_ERROR_CORR_TRIES = 10
 
 
 # Content files 
-PROMPT_DIR = pathlib.Path(rosetta.prompts.__file__).parent / "prompt_content"
+# PROMPT_DIR = pathlib.Path(rosetta.prompts.__file__).parent / "prompt_content"
+PROMPT_DIR = pathlib.Path(os.path.dirname(os.path.dirname(__file__))) / "prompt_content"
 
 ENV_ID_TO_SIM_CLS = {
     # Main short-horizon continuous control
@@ -92,5 +93,7 @@ ENV_ID_TO_SIM_CLS = {
 
 
 # Result files 
-BACKUP_DIR = pathlib.Path(rosetta.prompts.__file__).parents[1] / "reward_backup"
-DEMO_DIR = pathlib.Path(rosetta.prompts.__file__).parents[1] / "demos"
+# BACKUP_DIR = pathlib.Path(rosetta.prompts.__file__).parents[1] / "reward_backup"
+# DEMO_DIR = pathlib.Path(rosetta.prompts.__file__).parents[1] / "demos"
+BACKUP_DIR = pathlib.Path(os.path.dirname(os.path.dirname(__file__))).parents[1] / "reward_backup"
+DEMO_DIR = pathlib.Path(os.path.dirname(os.path.dirname(__file__))).parents[1] / "demos"

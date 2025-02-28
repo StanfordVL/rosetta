@@ -4,8 +4,8 @@ from openai import OpenAI
 from pathlib import Path
 from typing import Dict, Tuple, Optional, Any, List
 
-from rosetta_prompts.prompt_designs import DESIGN_NAME_TO_FUNC
-from rosetta_prompts.utils import prep_env_code, replace_methods, setup_backup_files, make_readable_output, make_readable_funcs
+from rosetta.prompts.prompt_designs import DESIGN_NAME_TO_FUNC
+from rosetta.prompts.utils import prep_env_code, replace_methods, setup_backup_files, make_readable_output, make_readable_funcs
 
 
 def generate_reward(

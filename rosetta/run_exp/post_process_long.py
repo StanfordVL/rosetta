@@ -13,7 +13,7 @@ from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
 from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 from mani_skill.envs.sapien_env import BaseEnv
 from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
-from rosetta_prompts.utils import stitch_mp4_files
+from rosetta.prompts.utils import stitch_mp4_files
 from stable_baselines3 import MAPLE
 from typing import Callable
 import glob
