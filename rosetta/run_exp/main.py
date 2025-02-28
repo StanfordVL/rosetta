@@ -9,10 +9,10 @@ import yaml
 import tyro
 from typing import Annotated
 import os
-from feedback_to_reward.run_exp.get_google_sheets_with_api import gen_sheet_to_jsonl
-from feedback_to_reward.run_exp.gen_config_dirs import gen_config_dirs
-from feedback_to_reward.run_exp.run_configs import run_configs
-from feedback_to_reward.run_exp.utils import BaseConfig
+from rosetta.run_exp.get_google_sheets_with_api import gen_sheet_to_jsonl
+from rosetta.run_exp.gen_config_dirs import gen_config_dirs
+from rosetta.run_exp.run_configs import run_configs
+from rosetta.run_exp.utils import BaseConfig
 from typing import List 
 
 

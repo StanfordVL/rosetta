@@ -2,10 +2,10 @@ import os
 import json
 from typing import Dict, Any
 import fire
-from feedback_to_reward.run_exp.env_config import ENV_CONFIG
+from rosetta.run_exp.env_config import ENV_CONFIG
 from pathlib import Path
 
-from feedback_to_reward.run_exp.system_config import ACCOUNT, PARTITION, EMAIL
+from rosetta.run_exp.system_config import ACCOUNT, PARTITION, EMAIL
 
 # Common SLURM header template shared between long and short tasks
 slurm_header_template = """#!/bin/bash
@@ -27,21 +27,21 @@ cd {working_dir}
 """
 
 # Training command templates
-train_cmd_long_template = """python -m feedback_to_reward.maniskill.long_horizon_learning.sb3_skill_maple_stage \\
+train_cmd_long_template = """python -m rosetta.maniskill.long_horizon_learning.sb3_skill_maple_stage \\
     --save-path {save_path} \\
     --env_id {env_id} \\
     --reward_json_path {reward_json} \\
     --max_episode_steps {max_episode_steps}
 """
 
-train_cmd_short_template = """python -m feedback_to_reward.maniskill.short_horizon_learning.maniskill_ppo \\
+train_cmd_short_template = """python -m rosetta.maniskill.short_horizon_learning.maniskill_ppo \\
     --exp_name {exp_path} \\
     --reward_json_path {reward_json} \\
     --default_config {default_config}
 """
 
 # Post-processing command template shared between long and short tasks
-post_process_template_short = """python -m feedback_to_reward.run_exp.record_demo \\
+post_process_template_short = """python -m rosetta.run_exp.record_demo \\
     --env_id {env_id} \\
     --checkpoint {checkpoint_path} \\
     --out_dir {demo_dir} \\
@@ -51,11 +51,11 @@ post_process_template_short = """python -m feedback_to_reward.run_exp.record_dem
     --reward_json_path {reward_json} \\
     --cuda
 
-python -m feedback_to_reward.run_exp.post_process_{task_type} {working_dir}
+python -m rosetta.run_exp.post_process_{task_type} {working_dir}
 """
 
 post_process_template_long = """
-python -m feedback_to_reward.run_exp.record_demo \\
+python -m rosetta.run_exp.record_demo \\
     --env_id {env_id} \\
     --checkpoint {checkpoint_path} \\
     --out_dir {demo_dir} \\
@@ -65,7 +65,7 @@ python -m feedback_to_reward.run_exp.record_demo \\
     --reward_json_path {reward_json} \\
     --cuda
 
-python -m feedback_to_reward.run_exp.post_process_{task_type} {working_dir}
+python -m rosetta.run_exp.post_process_{task_type} {working_dir}
 """
 
 

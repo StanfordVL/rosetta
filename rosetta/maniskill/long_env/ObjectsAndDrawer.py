@@ -17,8 +17,8 @@ from mani_skill import PACKAGE_ASSET_DIR
 from mani_skill.utils.geometry.geometry import transform_points
 from collections import defaultdict
 
-@register_env("PutObjectInDrawer", max_episode_steps=3000)
-class PutObjectInDrawer(BaseEnv):
+@register_env("ObjectsAndDrawer", max_episode_steps=3000)
+class ObjectsAndDrawerEnv(BaseEnv):
     SUPPORTED_ROBOTS = ["panda", "xmate3_robotiq", "fetch"]
     agent: Union[Panda, Xmate3Robotiq, Fetch]
 

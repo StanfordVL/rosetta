@@ -26,7 +26,6 @@ from mani_skill.utils.wrappers.record import RecordEpisode
 from mani_skill.vector.wrappers.gymnasium import ManiSkillVectorEnv
 
 # F2R specific imports 
-import rosetta.maniskill.customized_tasks
 from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
 from rosetta.maniskill.utils.utils import get_task_env_source,get_modified_source,update_config_from_dict,load_default_config
 

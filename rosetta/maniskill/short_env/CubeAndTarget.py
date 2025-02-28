@@ -17,8 +17,8 @@ from mani_skill.utils.structs.pose import Pose
 from mani_skill.utils.structs.types import Array
 
 
-@register_env("Pull1Cube", max_episode_steps=50)
-class Pull1CubeEnv(BaseEnv):
+@register_env("CubeAndTarget", max_episode_steps=50)
+class CubeAndTargetEnv(BaseEnv):
     """
     **Task Description:**
     A simple task where the objective is to pull a cube onto a target.

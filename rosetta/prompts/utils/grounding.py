@@ -1,6 +1,6 @@
 import base64 
 import cv2
-import glob.glob
+import glob
 from IPython.display import Video, display
 import json
 import os

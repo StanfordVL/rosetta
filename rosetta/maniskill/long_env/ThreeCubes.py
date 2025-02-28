@@ -16,8 +16,8 @@ from mani_skill.utils import common
 import time
 from collections import defaultdict
 
-@register_env("Stack3Cube", max_episode_steps=3e3)
-class Stack3CubeEnv(BaseEnv):
+@register_env("ThreeCubes", max_episode_steps=3e3)
+class ThreeCubesEnv(BaseEnv):
 
     SUPPORTED_ROBOTS = ["panda", "xmate3_robotiq", "fetch"]
     agent: Union[Panda, Xmate3Robotiq, Fetch]

@@ -14,5 +14,6 @@ setup(
         "Pillow",
         "redbaron",
         "setuptools"
+        "fire"
     ]
 )

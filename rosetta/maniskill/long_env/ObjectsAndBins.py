@@ -18,8 +18,8 @@ import time
 from transforms3d.euler import euler2quat
 from collections import defaultdict
 
-@register_env("ObjectToBin", max_episode_steps=2e3)
-class ObjectToBinEnv(BaseEnv):
+@register_env("ObjectsAndBins", max_episode_steps=2e3)
+class ObjectsAndBinsEnv(BaseEnv):
     SUPPORTED_ROBOTS = ["panda", "xmate3_robotiq", "fetch"]
     agent: Union[Panda, Xmate3Robotiq, Fetch]
     skill_config=None

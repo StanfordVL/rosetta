@@ -1,4 +1,4 @@
-from .stack_3_cube import Stack3CubeEnv
+from .ThreeCubes import ThreeCubesEnv
 from .put_apple_in_drawer import PutAppleInDrawerEnv
-from .object_to_bin import ObjectToBinEnv
-from .put_object_in_drawer import PutObjectInDrawer
+from .ObjectsAndBins import ObjectsAndBinsEnv
+from .ObjectsAndDrawer import ObjectsAndDrawerEnv

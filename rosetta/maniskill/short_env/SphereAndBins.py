@@ -19,8 +19,8 @@ from mani_skill.utils.structs.types import Array, GPUMemoryConfig, SimConfig
 
 import matplotlib.pyplot as plt
 import gymnasium as gym
-@register_env("PlaceSphere2BinWide", max_episode_steps=200)
-class PlaceSphere2BinWideEnv(BaseEnv):
+@register_env("SphereAndBins", max_episode_steps=200)
+class SphereAndBinsEnv(BaseEnv):
 
     SUPPORTED_ROBOTS = ["panda", "xmate3_robotiq", "fetch"]
 

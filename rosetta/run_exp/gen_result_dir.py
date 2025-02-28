@@ -4,10 +4,10 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from openai import OpenAI
-from feedback_to_reward.run_exp.gen_reward import generate_reward
-from feedback_to_reward_prompts.utils.constants import BACKUP_DIR as backup_path 
-from feedback_to_reward.run_exp.utils import generate_hash_uid, gen_uid_by_timestamp
-from feedback_to_reward.run_exp.env_config import ENV_CONFIG
+from rosetta.run_exp.gen_reward import generate_reward
+from rosetta.prompts.utils.constants import BACKUP_DIR as backup_path 
+from rosetta.run_exp.utils import generate_hash_uid, gen_uid_by_timestamp
+from rosetta.run_exp.env_config import ENV_CONFIG
 import traceback
 import fire
 def gen_prev_dir_dict(target_dir: str) -> Dict[str, str]:

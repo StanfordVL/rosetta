@@ -36,8 +36,8 @@ from mani_skill.utils.structs import Pose
 from mani_skill.utils.structs.types import Array, GPUMemoryConfig, SimConfig
 
 
-@register_env("PushBall", max_episode_steps=50)
-class PushBallEnv(BaseEnv):
+@register_env("BallAndTarget", max_episode_steps=50)
+class BallAndTargetEnv(BaseEnv):
     """
     Task Description
     ----------------

@@ -5,7 +5,7 @@ import fire
 
 from typing import Tuple
 import re
-from feedback_to_reward.run_exp.utils import generate_hash_uid
+from rosetta.run_exp.utils import generate_hash_uid
 
 # Key mapping dictionary
 KEY_MAP = {

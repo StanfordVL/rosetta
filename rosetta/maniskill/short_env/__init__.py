@@ -1,14 +1,14 @@
 
-from .place_sphere_2_bin_wide import PlaceSphere2BinWideEnv
+from .SphereAndBins import SphereAndBinsEnv
 
-from .push_ball import PushBallEnv
-
-from .stack_2_cube import Stack2CubeEnv
+from .BallAndTarget import BallAndTargetEnv
 
 from .stack_2_cube import Stack2CubeEnv
 
-from .pick_1_cube import Pick1CubeEnv
-from .pull_1_cube import Pull1CubeEnv
+from .stack_2_cube import Stack2CubeEnv
+
+from .CubeAndPoint import CubeAndPointEnv
+from .CubeAndTarget import CubeAndTargetEnv
 
 # Real robot 
 from .real_robot.place_cube_2_bowl import PlaceCube2BowlEnv

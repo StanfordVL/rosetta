@@ -5,10 +5,10 @@ import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 import logging
-from feedback_to_reward.run_exp.gen_result_dir import gen_prev_dir_dict, gen_result_dir
-from feedback_to_reward.run_exp.gen_sbatch import generate_sbatch
+from rosetta.run_exp.gen_result_dir import gen_prev_dir_dict, gen_result_dir
+from rosetta.run_exp.gen_sbatch import generate_sbatch
 import tyro
-from feedback_to_reward.run_exp.utils import BaseConfig
+from rosetta.run_exp.utils import BaseConfig
 from dataclasses import dataclass, field
 
 @dataclass
