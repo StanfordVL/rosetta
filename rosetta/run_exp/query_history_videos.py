@@ -1,4 +1,4 @@
-from feedback_to_reward.run_exp.gen_result_dir import gen_prev_dir_dict
+from rosetta.run_exp.gen_result_dir import gen_prev_dir_dict
 import os
 import json
 from pathlib import Path

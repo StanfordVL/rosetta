@@ -27,14 +27,14 @@ from mani_skill.utils.wrappers.record import RecordEpisode
 from mani_skill.vector.wrappers.gymnasium import ManiSkillVectorEnv
 
 # F2R specific imports 
-import feedback_to_reward.maniskill.long_env
-import feedback_to_reward.maniskill.short_env 
-from feedback_to_reward.maniskill.pipelines.reward_manipulator import RewardManipulator
-from feedback_to_reward.maniskill.utils.utils import get_task_env_source
-from feedback_to_reward.maniskill.wrappers.record_wrapper import RecordWrapper
-from feedback_to_reward.maniskill.short_horizon_learning.maniskill_ppo import Agent
+import rosetta.maniskill.long_env
+import rosetta.maniskill.short_env 
+from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
+from rosetta.maniskill.utils.utils import get_task_env_source
+from rosetta.maniskill.wrappers.record_wrapper import RecordWrapper
+from rosetta.maniskill.short_horizon_learning.maniskill_ppo import Agent
 from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
-from feedback_to_reward.maniskill.wrappers.skill_wrapper import SkillGymWrapper
+from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 
 
 @dataclass

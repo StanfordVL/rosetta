@@ -23,7 +23,7 @@ from stable_baselines3.common.vec_env.base_vec_env import (
     VecEnvObs,
     VecEnvStepReturn,
 )
-from feedback_to_reward.maniskill.primitive_skills.primitive_skills_gpu import PrimitiveSkillDelta
+from rosetta.maniskill.primitive_skills.primitive_skills_gpu import PrimitiveSkillDelta
 from mani_skill.vector.wrappers.sb3 import ManiSkillSB3VectorEnv
 import time
 

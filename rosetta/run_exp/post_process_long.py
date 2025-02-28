@@ -6,14 +6,14 @@ import gymnasium as gym
 import numpy as np
 import json
 from stable_baselines3 import MAPLE
-import feedback_to_reward.maniskill.long_env
-import feedback_to_reward.maniskill.short_env 
-from feedback_to_reward.maniskill.wrappers.skill_wrapper import SkillGymWrapper
+import rosetta.maniskill.long_env
+import rosetta.maniskill.short_env 
+from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 from mani_skill.utils.wrappers.gymnasium import CPUGymWrapper
-from feedback_to_reward.maniskill.wrappers.skill_wrapper import SkillGymWrapper
+from rosetta.maniskill.wrappers.skill_wrapper import SkillGymWrapper
 from mani_skill.envs.sapien_env import BaseEnv
-from feedback_to_reward.maniskill.pipelines.reward_manipulator import RewardManipulator
-from feedback_to_reward_prompts.utils import stitch_mp4_files
+from rosetta.maniskill.pipelines.reward_manipulator import RewardManipulator
+from rosetta_prompts.utils import stitch_mp4_files
 from stable_baselines3 import MAPLE
 from typing import Callable
 import glob

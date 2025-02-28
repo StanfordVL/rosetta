@@ -1,8 +1,8 @@
 import gymnasium as gym
 import torch
 import sapien.physx as physx
-#from feedback_to_reward.maniskill.utils.primitive_skills_cpu import PrimitiveSkillDelta
-from feedback_to_reward.maniskill.primitive_skills.primitive_skills_cpu import PrimitiveSkillDelta
+#from rosetta.maniskill.utils.primitive_skills_cpu import PrimitiveSkillDelta
+from rosetta.maniskill.primitive_skills.primitive_skills_cpu import PrimitiveSkillDelta
 import numpy as np
 from mani_skill.utils import common
 import sys

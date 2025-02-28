@@ -5,8 +5,8 @@ import json
 from pathlib import Path
 import fire
 from dataclasses import dataclass, field
-from feedback_to_reward.run_exp.utils import BaseConfig
-from feedback_to_reward.run_exp.query_history_videos import batch_build_history_and_option_folder
+from rosetta.run_exp.utils import BaseConfig
+from rosetta.run_exp.query_history_videos import batch_build_history_and_option_folder
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
