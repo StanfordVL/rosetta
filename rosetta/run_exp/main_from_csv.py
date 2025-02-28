@@ -56,17 +56,11 @@ class ExperimentConfig(BaseConfig):
             path.parent.mkdir(parents=True, exist_ok=True)
 
     def validate_config(self) -> None:
-        if getattr(self, 'spreadsheet_url').startswith("http"):
-            if self.gcloud_api is None:
-                raise ValueError("gcloud_api is required when spreadsheet_url is a Google Sheets URL.")
-            if self.range_name is None:
-                raise ValueError("range_name is required when spreadsheet_url is a Google Sheets URL.")
-        else: # make sure local file exist
-            if not os.path.exists(self.spreadsheet_url):
-                raise ValueError(f"Local file {self.spreadsheet_url} does not exist.")
+        if not os.path.exists(self.source_file_path):
+            raise ValueError(f"Local file {self.source_file_path} does not exist.")
 
 def run_experiment(config: ExperimentConfig) -> None:
-    """Run the experiment pipeline from spreadsheet to batch job submission."""
+    """Run the experiment pipeline from .csv or .json to batch job submission."""
     logging.info("Starting experiment pipeline")
     if config.source_file_path.endswith('.csv'):
         logging.info("Downloading feedback from Google Sheets")
@@ -79,7 +73,7 @@ def run_experiment(config: ExperimentConfig) -> None:
         logging.info("Fetching feedback from local file")
         assert config.source_file_path.endswith('.jsonl')
         if not (Path(os.path.abspath(config.source_file_path)) == config.jsonl_output_path):
-            shutil.copyfile(config.spreadsheet_url, config.jsonl_output_path)
+            shutil.copyfile(config.source_file_path, config.jsonl_output_path)
     
 
     logging.info("Generating configuration directories")
