@@ -1,0 +1,254 @@
+[
+    {
+        "elapsed_steps": 1,
+        "is_red_cube_grasped": false,
+        "red_cube_pos": [
+            -0.09287451207637787,
+            0.0882781594991684,
+            0.019999898970127106
+        ],
+        "is_green_cube_grasped": false,
+        "green_cube_pos": [
+            0.06901906430721283,
+            0.09606802463531494,
+            0.019999910145998
+        ],
+        "is_purple_cube_grasped": false,
+        "purple_cube_pos": [
+            0.1209922656416893,
+            -0.04905526712536812,
+            0.019999926909804344
+        ],
+        "stage": 0,
+        "gripper_pos": [
+            0.005763541907072067,
+            -0.027263179421424866,
+            0.1793270707130432
+        ],
+        "stage0_success": false,
+        "stage1_success": false,
+        "stage2_success": false,
+        "stage3_success": false,
+        "success": false,
+        "reward_components": {},
+        "num_timesteps": 0,
+        "skill_success": false,
+        "is_success": false
+    },
+    {
+        "action": "pick",
+        "params": [
+            -0.09030040353536606,
+            0.08720093965530396,
+            0.013923692516982555,
+            0.11598070710897446,
+            -0.04863901808857918,
+            0.1333598643541336,
+            0.1796255260705948
+        ]
+    },
+    {
+        "elapsed_steps": 48,
+        "is_red_cube_grasped": true,
+        "red_cube_pos": [
+            -0.0012344860006123781,
+            -0.000722583441529423,
+            0.31001126766204834
+        ],
+        "is_green_cube_grasped": false,
+        "green_cube_pos": [
+            0.06901906430721283,
+            0.09606805443763733,
+            0.01999993436038494
+        ],
+        "is_purple_cube_grasped": false,
+        "purple_cube_pos": [
+            0.1209922507405281,
+            -0.04905526340007782,
+            0.0199999138712883
+        ],
+        "stage": 0,
+        "gripper_pos": [
+            -0.0015193326398730278,
+            -0.0013810563832521439,
+            0.30193111300468445
+        ],
+        "stage0_success": true,
+        "stage1_success": false,
+        "stage2_success": false,
+        "stage3_success": false,
+        "success": false,
+        "reward_components": {
+            "success": 10,
+            "afford_skill": 0.0,
+            "afford_pos": 4.966568953823298,
+            "prev_success": 0.0,
+            "reward": 14.966568953823298
+        },
+        "num_timesteps": 47,
+        "skill_success": true,
+        "is_success": false
+    },
+    {
+        "action": "place",
+        "params": [
+            0.06537042558193207,
+            0.10560837388038635,
+            0.06626863032579422,
+            0.024489080533385277,
+            0.016442041844129562,
+            0.030251197516918182,
+            0.8316541314125061
+        ]
+    },
+    {
+        "elapsed_steps": 94,
+        "is_red_cube_grasped": false,
+        "red_cube_pos": [
+            0.06215035542845726,
+            0.10578009486198425,
+            0.059992074966430664
+        ],
+        "is_green_cube_grasped": false,
+        "green_cube_pos": [
+            0.06898870319128036,
+            0.09606347233057022,
+            0.01999989151954651
+        ],
+        "is_purple_cube_grasped": false,
+        "purple_cube_pos": [
+            0.1209922507405281,
+            -0.04905526340007782,
+            0.0199999138712883
+        ],
+        "stage": 1,
+        "gripper_pos": [
+            0.004445582628250122,
+            -0.0032328441739082336,
+            0.3037015199661255
+        ],
+        "stage0_success": false,
+        "stage1_success": true,
+        "stage2_success": false,
+        "stage3_success": false,
+        "success": false,
+        "reward_components": {
+            "success": 10,
+            "afford_skill": 0.0,
+            "afford_pos": 4.73228745162487,
+            "prev_success": 0.0,
+            "reward": 14.73228745162487
+        },
+        "num_timesteps": 46,
+        "skill_success": true,
+        "is_success": false
+    },
+    {
+        "action": "pick",
+        "params": [
+            0.12479955703020096,
+            -0.038401853293180466,
+            0.01670045033097267,
+            -0.05234610289335251,
+            0.03088575229048729,
+            0.0693279355764389,
+            0.35848039388656616
+        ]
+    },
+    {
+        "elapsed_steps": 144,
+        "is_red_cube_grasped": false,
+        "red_cube_pos": [
+            0.06214930862188339,
+            0.10578620433807373,
+            0.05999555438756943
+        ],
+        "is_green_cube_grasped": false,
+        "green_cube_pos": [
+            0.0689854770898819,
+            0.09606757760047913,
+            0.01999945193529129
+        ],
+        "is_purple_cube_grasped": true,
+        "purple_cube_pos": [
+            -0.006962084677070379,
+            0.0019754155073314905,
+            0.31414568424224854
+        ],
+        "stage": 2,
+        "gripper_pos": [
+            0.005102839320898056,
+            -0.0012864300515502691,
+            0.30544954538345337
+        ],
+        "stage0_success": false,
+        "stage1_success": true,
+        "stage2_success": true,
+        "stage3_success": false,
+        "success": false,
+        "reward_components": {
+            "success": 10,
+            "afford_skill": 0.0,
+            "afford_pos": 4.941079644486308,
+            "prev_success": 0.0,
+            "reward": 14.941079644486308
+        },
+        "num_timesteps": 50,
+        "skill_success": true,
+        "is_success": false
+    },
+    {
+        "action": "place",
+        "params": [
+            0.0816548615694046,
+            0.10720615088939667,
+            0.10026548057794571,
+            0.07918578386306763,
+            0.009855648502707481,
+            0.031090201810002327,
+            0.2089308649301529
+        ]
+    },
+    {
+        "elapsed_steps": 191,
+        "is_red_cube_grasped": false,
+        "red_cube_pos": [
+            0.0589902326464653,
+            0.10381417721509933,
+            0.06002267822623253
+        ],
+        "is_green_cube_grasped": false,
+        "green_cube_pos": [
+            0.06896976381540298,
+            0.09611055254936218,
+            0.01999831758439541
+        ],
+        "is_purple_cube_grasped": false,
+        "purple_cube_pos": [
+            0.0676807090640068,
+            0.11981520801782608,
+            0.10003932565450668
+        ],
+        "stage": 3,
+        "gripper_pos": [
+            0.002324462868273258,
+            -0.004806285724043846,
+            0.2990895211696625
+        ],
+        "stage0_success": false,
+        "stage1_success": true,
+        "stage2_success": false,
+        "stage3_success": true,
+        "success": true,
+        "reward_components": {
+            "success": 10,
+            "afford_skill": 0.0,
+            "afford_pos": 4.781706091016531,
+            "prev_success": 0.0,
+            "reward": 14.781706091016531
+        },
+        "num_timesteps": 47,
+        "skill_success": true,
+        "is_success": true
+    }
+]

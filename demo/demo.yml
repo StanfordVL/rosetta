@@ -1,0 +1,9 @@
+source_file_path: "demo/preference.csv" # preference csv
+jsonl_output_path: "demo/jsonl/demo.jsonl" # Path to save annotator preference
+config_dirs_path: "demo/config" # Path to save experiment configs
+result_dirs_path: "demo/result" # Path to save experiment results
+dry_run: False # False to launch slurm training jobs, True to only generate sbatch files
+num_workers: 1 # Number of worker to
+short_prompt_design: "rosetta_sh" # Short horizon prompt design
+long_prompt_design: "rosetta_lh" # Long horizon prompt design
+num_gen: 1 # how many preference grounding and reward gen to call per round
