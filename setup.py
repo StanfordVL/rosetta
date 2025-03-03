@@ -13,7 +13,7 @@ setup(
         "opencv_python",
         "Pillow",
         "redbaron",
-        "setuptools"
+        "setuptools",
         "fire"
     ]
 )
