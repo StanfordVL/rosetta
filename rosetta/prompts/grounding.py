@@ -24,8 +24,8 @@ def state_description(data, env, act_space, client, scale=1):
     state_usr_msg.content = [
         {"type": "text", "text": state_usr_msg.content},
         {
-            "type": "image_url", 
-            "image_url": {"url": f"data:{img_type};base64,{img_b64_str}"}   
+            "type": "image_url",
+            "image_url": {"url": f"data:{img_type};base64,{img_b64_str}"}
         }
     ]
     params = {
@@ -35,7 +35,8 @@ def state_description(data, env, act_space, client, scale=1):
         "frequency_penalty": 1.0
     }
     hist = [state_sys_msg, state_usr_msg]
-    return query_until_complete(client, hist, "gpt-4o", params)
+
+    return query_until_complete(client, hist, "gpt-4o", params).content
 
 
 def action_description(action_state, env, act_space, client):
@@ -54,7 +55,7 @@ def action_description(action_state, env, act_space, client):
         "end_state_language_description": end_state_language_description,
         "action_description": action_description
     }
-    if act_space == "actprim": 
+    if act_space == "actprim":
         dynamic_fields["action_description"] = action_description
     user_actdesc_msg.fill_dynamic_fields(dynamic_fields)
 
@@ -65,7 +66,8 @@ def action_description(action_state, env, act_space, client):
         "frequency_penalty": 1.0
     }
     hist = [system_actdesc_msg, user_actdesc_msg]
-    return query_until_complete(client, hist, "gpt-4o", params)
+
+    return query_until_complete(client, hist, "gpt-4o", params).content
 
 
 def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=True):
@@ -113,18 +115,18 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
             cv2.imwrite(end_frame_path, end_frame)
 
             traj[i*2]["image_path"] = start_frame_path
-            traj[i*2]["description"] = state_description(traj[i*2], act_space=act_space, client=client, env=env).content
+            traj[i*2]["description"] = state_description(traj[i*2], act_space=act_space, client=client, env=env)
 
             if verbose:
                 print(f"State {i} description: {traj[i*2]['description']}")
 
         traj[-1]["image_path"] = end_frame_path
-        traj[-1]["description"] = state_description(traj[-1], act_space=act_space, client=client, env=env).content
+        traj[-1]["description"] = state_description(traj[-1], act_space=act_space, client=client, env=env)
 
         if verbose:
             print(f"State {num_steps} description: {traj[-1]['description']}")
 
-        # Store state descriptions 
+        # Store state descriptions
         with open(os.path.join(demo_dir, "traj_with_state_descriptions.json"), "w") as f:
             json.dump(traj, f, indent=4)
 
@@ -140,7 +142,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
             action_infos.append(action_info)
 
         for i in range(num_steps):
-            res = action_description(action_infos[i], act_space=act_space, client=client, env=env).content
+            res = action_description(action_infos[i], act_space=act_space, client=client, env=env)
             traj[i*2+1]["description"] = res
 
             if verbose:
@@ -149,7 +151,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
         # Save Trajectory with State and Action description
         with open(os.path.join(demo_dir, "traj_with_state_and_action_descriptions.json"), "w") as f:
             json.dump(traj, f, indent=4)
-    
+
         # Save only description
         description = {}
         state_count = 0
@@ -162,7 +164,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
                 description[f"action_{state_count}"] = t["description"]
                 state_count += 1
                 is_state = True
-            
+
     elif act_space == "contcontrol":
         image_folder = os.path.join(demo_dir, "frames")
         image_paths = glob.glob(os.path.join(image_folder, "*.png"))
@@ -172,10 +174,10 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
 
         if verbose:
             print("Loaded demo with {} frames".format(num_frames))
-        
+
         for i in range(num_frames):
             traj[i]["image_path"] = image_paths[i]
-            traj[i]["description"] = state_description(traj[i], act_space=act_space, client=client, env=env).content
+            traj[i]["description"] = state_description(traj[i], act_space=act_space, client=client, env=env)
             if verbose:
                 print(f"State {i} description: {traj[i]['description']}")
 
@@ -195,7 +197,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
 
             if verbose:
                 print(f"Step {i} action description: {res}")
-        
+
         description[f"state_{num_frames-1}"] = traj[-1]["description"]
     else:
         raise ValueError("Invalid action space")
@@ -209,7 +211,7 @@ def demo_to_language_description(demo_dir, env_id, act_space, client, verbose=Tr
 # Step 2: ground preference
 
 def prompt_ground_preference(demo_description, original_preference, task_description, client, temperature):
-    
+
     demo_string = ""
     for description_key, description_value in demo_description.items():
         demo_string += f"{description_key}: {description_value}\n"
@@ -235,17 +237,19 @@ def prompt_ground_preference(demo_description, original_preference, task_descrip
         "frequency_penalty": 1.0,
         "response_format": "json_object"
     }
-    return query_until_complete(client, hist, "gpt-4o", params)
+    content = query_until_complete(client, hist, "gpt-4o", params).content
+    json_obj = json.loads(content)
+    return json_obj
 
 
 def prompt_new_description(demo_description, task_description, grounded_preference, client, temperature):
 
     new_desc_system_msg = PromptMessage(
-        role="system", 
+        role="system",
         content=get_prompt_content("grounding/new_description_system")
     )
     new_desc_user_msg = PromptMessage(
-        role="user", 
+        role="user",
         content=get_prompt_content("grounding/new_description_user")
     )
     new_desc_user_msg.fill_dynamic_fields({
@@ -261,8 +265,10 @@ def prompt_new_description(demo_description, task_description, grounded_preferen
         "frequency_penalty": 1.0,
         "response_format": "json_object"
     }
-    
-    return query_until_complete(client, hist, "gpt-4o", params)
+
+    content = query_until_complete(client, hist, "gpt-4o", params).content
+    json_obj = json.loads(content)
+    return json_obj["task_description"]
 
 
 def ground_preference(
@@ -277,22 +283,22 @@ def ground_preference(
     **kwargs
 ):
     env = ENV_ID_TO_GROUNDING_CLS[env_id]()
-    if task_description is None: 
+    if task_description is None:
         task_description = env.description
-    
+
     # Get step-by-step demo description
-    if ("description_exists" not in kwargs) or (not kwargs["description_exists"]): 
+    if ("description_exists" not in kwargs) or (not kwargs["description_exists"]):
         preference_file = os.path.join(demo_dir, "preference.txt")
-        try: 
+        try:
             with open(preference_file, "w") as f:
                 f.write(preference_text)
         # TODO remove if possible.
-        except FileNotFoundError: 
+        except FileNotFoundError:
             legacy_demo_dir = Path(demo_dir).parent / "episode_0"
             legacy_preference_file = legacy_demo_dir / "preference.txt"
             with open(legacy_preference_file, "w") as f:
                 f.write(preference_text)
-        
+
         demo_description = demo_to_language_description(
             demo_dir=demo_dir,
             act_space=act_space,
@@ -300,21 +306,21 @@ def ground_preference(
             env_id=env_id,
             verbose=True,
         )
-    
+
     else:
         descrip_fn = Path(demo_dir) / "description.json"
-        with open(descrip_fn, "r") as f: 
+        with open(descrip_fn, "r") as f:
             demo_description = json.load(f)
-    
+
     # Get grounded preference and demo summary
-    output = json.loads(prompt_ground_preference(
+    output = prompt_ground_preference(
         demo_description,
         preference_text,
-        task_description, 
+        task_description,
         client=client,
         temperature=temperature
-    ).content)
-    
+    )
+
     # Get new task description based on this preference, for use in the *next* round
     new_task_description = prompt_new_description(
         demo_description=demo_description,
@@ -323,7 +329,7 @@ def ground_preference(
         client=client,
         temperature=temperature
     )
-    output["grounded_preference"] = output.pop("feedback")
+    output["grounded_preference"] = output.pop("preference")
     output["task_description"] = task_description
     output["next_description"] = new_task_description
     output["original_preference"] = preference_text

@@ -1,8 +1,8 @@
 from typing import Dict, List, Optional, Any
 
 ENV_CONFIG: Dict[str, Dict[str, Any]] = {
-    "PlaceSphere2BinWide": {
-        "env_id": "PlaceSphere2BinWide",
+    "SphereAndBins": {
+        "env_id": "SphereAndBins",
         "job_mem": "16G",
         "task_type": "short",
         "num_envs": 1024,
@@ -42,12 +42,12 @@ ENV_CONFIG: Dict[str, Dict[str, Any]] = {
         "num_steps": 200,
         "num_eval_steps": 200,
         "eval_freq": 25,
-        "act_space": "contcontrol", 
+        "act_space": "contcontrol",
         #"prompt_design": "code_ex_cot_v2",
         "simulator": "maniskill",
     },
-    "PushBall": {
-        "env_id": "PushBall",
+    "BallAndTarget": {
+        "env_id": "BallAndTarget",
         "job_mem": "16G",
         "task_type": "short",
         "num_envs": 1024,
@@ -61,8 +61,8 @@ ENV_CONFIG: Dict[str, Dict[str, Any]] = {
         #"prompt_design": "code_ex_cot_v2",
         "simulator": "maniskill",
     },
-    "Stack3Cube": {
-        "env_id": "Stack3Cube",
+    "ThreeCubes": {
+        "env_id": "ThreeCubes",
         "job_mem": "100G",
         "task_type": "long",
         "act_space": "actprim",
@@ -78,8 +78,8 @@ ENV_CONFIG: Dict[str, Dict[str, Any]] = {
         "eval-step": 100000,
         "max_steps_per_video": 1,
     },
-    "ObjectToBin": {
-        "env_id": "ObjectToBin",
+    "ObjectsAndBins": {
+        "env_id": "ObjectsAndBins",
         "job_mem": "100G",
         "task_type": "long",
         "act_space": "actprim",
@@ -95,8 +95,8 @@ ENV_CONFIG: Dict[str, Dict[str, Any]] = {
         "eval-step": 100000,
         "max_steps_per_video": 1,
     },
-    "PutObjectInDrawer": {
-        "env_id": "PutObjectInDrawer",
+    "ObjectsAndDrawer": {
+        "env_id": "ObjectsAndDrawer",
         "job_mem": "100G",
         "task_type": "long",
         "act_space": "actprim",
@@ -112,8 +112,8 @@ ENV_CONFIG: Dict[str, Dict[str, Any]] = {
         "eval-step": 100000,
         "max_steps_per_video": 1,
     },
-    "Pick1Cube": {
-        "env_id": "Pick1Cube",
+    "CubeAndPoint": {
+        "env_id": "CubeAndPoint",
         "job_mem": "16G",
         "task_type": "short",
         "num_envs": 1024,
@@ -127,8 +127,8 @@ ENV_CONFIG: Dict[str, Dict[str, Any]] = {
         #"prompt_design": "code_ex_cot_v2",
         "simulator": "maniskill",
     },
-    "Pull1Cube": {
-        "env_id": "Pull1Cube",
+    "CubeAndTarget": {
+        "env_id": "CubeAndTarget",
         "job_mem": "16G",
         "task_type": "short",
         "num_envs": 1024,

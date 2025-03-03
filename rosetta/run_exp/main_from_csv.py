@@ -27,7 +27,7 @@ class ExperimentConfig(BaseConfig):
     short_prompt_design: Annotated[Optional[str], "Short prompt design"] = "rosetta_sh"
     long_prompt_design: Annotated[Optional[str], "Long prompt design"] = "rosetta_lh"
     num_gen: Annotated[Optional[int], "Number of reward to generate"] = 1
-    chosen_variants: List[int] = field(default_factory=lambda: [5,6]) # Param to choose specified index of reward genration when dry_run=False
+    chosen_variants: List[int] = field(default_factory=lambda: [4,5,6]) # Param to choose specified index of reward genration when dry_run=False
 
     config_yaml: Annotated[Optional[Path], "Path to YAML configuration file"] = None
 
@@ -65,7 +65,7 @@ def run_experiment(config: ExperimentConfig) -> None:
     if config.source_file_path.endswith('.csv'):
         logging.info(f"Fetching feedback from local file {config.source_file_path}")
         csv_to_jsonl(
-            config.csv_path,
+            config.source_file_path,
             config.jsonl_output_path
         )
     else:
@@ -111,7 +111,6 @@ if __name__ == "__main__":
         config.load_yaml_config()
         config.validate_paths()
         config.validate_config()
-        print(config)
         run_experiment(config)
     except Exception as e:
         logging.error(str(e))

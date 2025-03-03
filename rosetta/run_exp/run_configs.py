@@ -32,7 +32,7 @@ class ProcessArgs:
     short_prompt_design: str
     long_prompt_design: str
     num_gen: int = 1
-    chosen_variants: List[int] = field(default_factory=lambda: []) 
+    chosen_variants: List[int] = field(default_factory=lambda: [])
 
 def process_result_dir(args: ProcessArgs) -> None:
     """Process a single configuration directory."""
@@ -44,9 +44,9 @@ def process_result_dir(args: ProcessArgs) -> None:
     logging.info(f"Processing configuration directory: {args.config_dir_path}")
     try:
         new_gen_rsts = gen_result_dir(
-            src_path=args.config_dir_path, 
+            src_path=args.config_dir_path,
             save_dir=args.result_dirs_path,
-            result_dict=args.prev_dir_dict, 
+            result_dict=args.prev_dir_dict,
             short_prompt_design=args.short_prompt_design,
             long_prompt_design=args.long_prompt_design,
             num_gen=args.num_gen,
@@ -54,7 +54,7 @@ def process_result_dir(args: ProcessArgs) -> None:
         )
         for rst in new_gen_rsts:
             sbatch_path = generate_sbatch(rst["folder_path"])
-        
+
             if rst["submittable"] and not args.dry_run:
                 subprocess.run(["sbatch", str(sbatch_path)], check=True)
                 logging.info(f"Successfully submitted batch job: {sbatch_path}")
@@ -65,9 +65,9 @@ def process_result_dir(args: ProcessArgs) -> None:
         raise
 
 def run_configs(
-    config_paths: List[Path], 
-    result_dirs_path: Path, 
-    dry_run: bool, 
+    config_paths: List[Path],
+    result_dirs_path: Path,
+    dry_run: bool,
     num_workers: int,
     short_prompt_design: Optional[str] = None,
     long_prompt_design: Optional[str] = None,
@@ -100,19 +100,19 @@ def run_configs(
         )
         for config_dir_path in config_paths
     ]
-    
+
     # Use ProcessPoolExecutor for parallel processing
     try:
         with ProcessPoolExecutor(max_workers=num_workers) as executor:
             futures = list(executor.map(process_result_dir, process_args))
-            
+
     except Exception as e:
         logging.error(f"Error in parallel processing: {str(e)}")
         raise
 
     logging.info("Configuration processing completed successfully")
 
-    
+
 if __name__ == "__main__":
     import os
     config=tyro.cli(ConfigArgs)
@@ -130,4 +130,4 @@ if __name__ == "__main__":
         config.num_gen,
         config.chosen_variants,
     )
-    
+
