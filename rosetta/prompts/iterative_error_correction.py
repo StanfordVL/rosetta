@@ -1,9 +1,8 @@
-from rosetta.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon 
-from rosetta.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon 
+from feedback_to_reward.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon
+from feedback_to_reward.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon
 
-from rosetta.prompts.utils.constants import *
-from rosetta.prompts.prompt_message import PromptMessage
-from rosetta.prompts.utils import *
+from feedback_to_reward_prompts.prompt_message import PromptMessage
+from feedback_to_reward_prompts.utils import *
 
 
 def get_error_data(
@@ -14,13 +13,13 @@ def get_error_data(
     stages=None,
     target_actions=None
 ):
-    if act_space == "actprim": 
+    if act_space == "actprim":
         res = error_test_longhorizon(
             env_id=env_id,
             func_dict=func_dict,
             functions_to_overwrite=functions_to_overwrite,
             stages=stages,
-            target_actions=target_actions    
+            target_actions=target_actions
         )
     elif act_space == "contcontrol":
         res = error_test_shorthorizon(
@@ -42,36 +41,36 @@ def get_error_line(
     print(matches)
     print()
     error_line_num, error_func_name = None, None
-    
+
     for line_num, func_name in reversed(matches):
         if func_name in func_dict:
             error_line_num = int(line_num)
             error_func_name = func_name
-            break 
-    
+            break
+
     error_code = func_dict[error_func_name]
 
     class CodeVisitor(ast.NodeVisitor):
         def __init__(self):
             super().__init__()
-            self.relevant_nodes = [] 
-        
+            self.relevant_nodes = []
+
         def visit(self, node):
             if hasattr(node, "lineno"):
                 start_line = node.lineno
                 end_line = getattr(node, "end_lineno", start_line)
-                
+
                 if start_line <= error_line_num <= end_line:
                     self.relevant_nodes.append(node)
-            
+
             super().visit(node)
 
-        
+
     def extract_code_from_node(node, lines):
         start_line = node.lineno - 1        # Convert 1-indexed to 0-indexed
         end_line = getattr(node, "end_lineno", node.lineno)
         return "".join(lines[start_line:end_line])
-    
+
     tree = ast.parse(error_code)
     visitor = CodeVisitor()
     visitor.visit(tree)
@@ -88,14 +87,14 @@ def get_error_line(
 def o1mini_error_loop(
     client,
     params,
-    num_tries, 
-    latest_funcs, 
-    env_id, 
-    funcs_to_overwrite, 
-    act_space, 
-    env_code, 
-    hist, 
-    debug_hist, 
+    num_tries,
+    latest_funcs,
+    env_id,
+    funcs_to_overwrite,
+    act_space,
+    env_code,
+    hist,
+    debug_hist,
     debug_f,
     stages=None,
     target_actions=None
@@ -108,7 +107,7 @@ def o1mini_error_loop(
 
         if error_data["success"]:
             print("Success")
-            break 
+            break
 
         # If necessary, create error correction user message
         print()
@@ -118,24 +117,32 @@ def o1mini_error_loop(
         error_line = get_error_line(error_data["error_message"], latest_funcs)
 
         env_code = replace_methods(env_code, latest_funcs)
-        documentation = get_prompt_content(f"documentation/{act_space}")
 
         user_errorcorr_msg = PromptMessage(role="user", content=get_prompt_content(f"errorcorr/{act_space}/o1mini"))
-        user_errorcorr_msg.fill_dynamic_fields({
-            "error_trace": error_data["error_message"],
-            "error_line": error_line,
-            "generated_env_code": env_code,
-            "documentation": documentation
-        })
+        if act_space == "contcontrol":
+            documentation = get_prompt_content(f"documentation/{act_space}")
+            user_errorcorr_msg.fill_dynamic_fields({
+                "error_trace": error_data["error_message"],
+                "error_line": error_line,
+                "generated_env_code": env_code,
+                "documentation": documentation
+            })
+        elif act_space == "actprim":
+            user_errorcorr_msg.fill_dynamic_fields({
+                "error_trace": error_data["error_message"],
+                "error_line": error_line,
+                "generated_env_code": env_code
+            })
+
         hist.append(user_errorcorr_msg)
-        default_save_msg_hist(user_errorcorr_msg, debug_hist, debug_f)    
+        default_save_msg_hist(user_errorcorr_msg, debug_hist, debug_f)
 
         # build history with just user message for o1mini
         error_hist = [user_errorcorr_msg]
 
         # run api on error_hist (just user message)
         asst_errcorr_msg = query_until_complete(client, error_hist, "o1-mini", params)
-        default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)  
+        default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)
 
         latest_funcs = update_latest_funcs(asst_errcorr_msg, latest_funcs)
 
@@ -148,14 +155,14 @@ def o1mini_error_loop(
 def o1mini_error_loop_eureka(
     client,
     params,
-    num_tries, 
-    latest_funcs, 
-    env_id, 
-    funcs_to_overwrite, 
-    act_space, 
-    env_code, 
-    hist, 
-    debug_hist, 
+    num_tries,
+    latest_funcs,
+    env_id,
+    funcs_to_overwrite,
+    act_space,
+    env_code,
+    hist,
+    debug_hist,
     debug_f,
     stages=None,
     target_actions=None
@@ -168,7 +175,7 @@ def o1mini_error_loop_eureka(
 
         if error_data["success"]:
             print("Success")
-            break 
+            break
 
         # If necessary, create error correction user message
         print()
@@ -188,14 +195,14 @@ def o1mini_error_loop_eureka(
             "documentation": documentation
         })
         hist.append(user_errorcorr_msg)
-        default_save_msg_hist(user_errorcorr_msg, debug_hist, debug_f)    
+        default_save_msg_hist(user_errorcorr_msg, debug_hist, debug_f)
 
         # build history with just user message for o1mini
         error_hist = [user_errorcorr_msg]
 
         # run api on error_hist (just user message)
         asst_errcorr_msg = query_until_complete(client, error_hist, "o1-mini", params)
-        default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)  
+        default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)
 
         latest_funcs = update_latest_funcs(asst_errcorr_msg, latest_funcs)
 
@@ -208,14 +215,14 @@ def o1mini_error_loop_eureka(
 def o1mini_error_loop_ro(
     client,
     params,
-    num_tries, 
-    latest_funcs, 
-    env_id, 
-    funcs_to_overwrite, 
-    act_space, 
-    env_code, 
-    hist, 
-    debug_hist, 
+    num_tries,
+    latest_funcs,
+    env_id,
+    funcs_to_overwrite,
+    act_space,
+    env_code,
+    hist,
+    debug_hist,
     debug_f,
     stages=None,
     target_actions=None
@@ -228,7 +235,7 @@ def o1mini_error_loop_ro(
 
         if error_data["success"]:
             print("Success")
-            break 
+            break
 
         # If necessary, create error correction user message
         print()
@@ -248,14 +255,14 @@ def o1mini_error_loop_ro(
             "documentation": documentation
         })
         hist.append(user_errorcorr_msg)
-        default_save_msg_hist(user_errorcorr_msg, debug_hist, debug_f)    
+        default_save_msg_hist(user_errorcorr_msg, debug_hist, debug_f)
 
         # build history with just user message for o1mini
         error_hist = [user_errorcorr_msg]
 
         # run api on error_hist (just user message)
         asst_errcorr_msg = query_until_complete(client, error_hist, "o1-mini", params)
-        default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)  
+        default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)
 
         latest_funcs = update_latest_funcs(asst_errcorr_msg, latest_funcs)
 

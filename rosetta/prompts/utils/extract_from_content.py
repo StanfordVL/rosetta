@@ -1,6 +1,6 @@
 '''
 Utils for extracting necessary content (plan, code, num stages) from FM assistant messages
-    and collecting/updating wherever they are stored. 
+    and collecting/updating wherever they are stored.
 Includes util for building long-horizon function from generations, which are not the function's
     final form.
 '''
@@ -16,7 +16,7 @@ def extract_functions_and_names(code):
         red = redbaron.RedBaron(code)
     except Exception as e:
         red = None
-    
+
     functions = []
 
     # Helper to extract function code using redbaron
@@ -29,12 +29,12 @@ def extract_functions_and_names(code):
             if node.type == "def":
                 # Top level function (directly under the module)
                 functions.append((node.name, get_function_code_redbaron(node)))
-            elif node.type == "class": 
-                # Methods within top-level class 
+            elif node.type == "class":
+                # Methods within top-level class
                 for class_child in node.value:
-                    if class_child.type == "def": 
+                    if class_child.type == "def":
                         functions.append((class_child.name, get_function_code_redbaron(class_child)))
-    
+
     else:
         def process_function(lines, start_index, functions):
             n = len(lines)
@@ -114,7 +114,7 @@ def extract_functions_and_names(code):
     updated_functions = []
     for name, func_code in functions:
         updated_functions.append((name, func_code))
-    
+
     return updated_functions
 
 
@@ -128,30 +128,30 @@ def extract_functions_from_content(content):
     functions = {}
     for code in extracteds:
         extracted_functions = extract_functions_and_names(code)
-        for name, extracted_function in extracted_functions: 
+        for name, extracted_function in extracted_functions:
             functions[name] = extracted_function
-    
+
     for name in functions:
         if name == "skill_reward":
             functions[name] = functions[name] # WHAT??
-    
+
     return functions
 
 
-def extract_plan(message): 
+def extract_plan(message):
     content = message.message["content"]
     plan = content.split("# Plan")[-1].split("## End Of Plan")[0]
     return plan
-    
+
 
 def extract_target_actions(message):
     """
-    Extract the 'Stage template' values from a markdown-formatted text, 
+    Extract the 'Stage template' values from a markdown-formatted text,
     focusing specifically on a continuous block of stages.
-    
+
     Args:
         markdown_text (str): The markdown text containing stage descriptions
-    
+
     Returns:
         list: A list of stage template values
     """
@@ -161,10 +161,10 @@ def extract_target_actions(message):
     # Find stage number and stage action lines
     stage_block_pattern = r"(?m)(^### Stage \d+: .*$)\n(^- Stage template: \".*\"$)"
     stage_blocks = re.findall(stage_block_pattern, content)
-    
+
     if not stage_blocks:
         return []
-    
+
     action_pattern = r'- Stage template: "(.*?)"'
     action_names = [
         re.search(action_pattern, stage_block[1]).group(1) for stage_block in stage_blocks
@@ -175,14 +175,14 @@ def extract_target_actions(message):
         elif action == "push": return 2
         else: raise ValueError(f"Invalid action {action}")
     actions = [action_map(action_name) for action_name in action_names]
-    
+
     return actions
 
 
 def extract_num_stages(interim_funcs):
     stage_funcs = [
         func_name for func_name in interim_funcs.keys()
-        if func_name.startswith('compute_target_position_stage') or 
+        if func_name.startswith('compute_target_position_stage') or
            func_name.startswith('compute_target_pos_reward_stage')
     ]
     stages = sorted(
@@ -190,7 +190,7 @@ def extract_num_stages(interim_funcs):
     )
     if stages != list(range(len(stages))):
         raise ValueError("Stage indices must be 0-indexed and consecutive")
-    
+
     return len(stages)
 
 
@@ -204,7 +204,7 @@ def update_latest_funcs(message, func_dict):
 
 
 def update_latest_interim_funcs_actprim(message, interim_func_dict, target_actions, debug_mode=False):
-    if debug_mode: 
+    if debug_mode:
         content = message["content"]
     else:
         content = message.message["content"]
@@ -219,7 +219,7 @@ def build_actprim_funcs(interim_funcs, target_actions):
     """
     Builds final-format actprim funcs from intermediate format that came from generation
 
-    :param target_actions {List[int]}: ordered list of target actions for each stage, so that 
+    :param target_actions {List[int]}: ordered list of target actions for each stage, so that
                                        target_actions[i] contains the target_action for stage i
     :param interim_funcs {Dict[str, str]}: dict of functions that contains some subset of
                                        - evaluate
@@ -232,75 +232,43 @@ def build_actprim_funcs(interim_funcs, target_actions):
     """
     # Validate stage indices
     stage_funcs = [
-        func_name for func_name in interim_funcs.keys() 
-        if func_name.startswith('compute_target_position_stage') or 
+        func_name for func_name in interim_funcs.keys()
+        if func_name.startswith('compute_target_position_stage') or
            func_name.startswith('compute_target_pos_reward_stage')
     ]
     stages = sorted(
         set(int(func_name.split('stage')[-1]) for func_name in stage_funcs)
     )
-    
+
     if stages != list(range(len(stages))):
         raise ValueError("Stage indices must be 0-indexed and consecutive")
-    
+
     # Generate stage reward function
     def generate_stage_reward_func(stage):
-        if stage == 0:
-            return textwrap.indent(f'''
+        return textwrap.indent(f'''
 def stage_{stage}_reward():
-    target_action = {target_actions[stage]}
-
     # Target position computation
 {textwrap.indent(
     get_func_inner_content(
         interim_funcs[f'compute_target_position_stage{stage}']
 ), "    ")}
-
-    if current_selected_action != target_action:
-        reward_components["afford_skill"] = -1.0
-    else:
+    target_action = {target_actions[stage]}
+    if current_selected_action == target_action:
         # Target position reward computation
 {textwrap.indent(
     get_func_inner_content(
         interim_funcs[f'compute_target_pos_reward_stage{stage}']
     ), "        "
 )}
-        reward_components["afford_pos"] = reward
-    
+        # scale reward to positive
+        reward_components["afford"] = (1 + reward) * 5.0
+
     if cur_info["stage{stage}_success"]:
         reward_components["success"] = 10.0
-    
-    return reward_components''', 
+
+    return reward_components''',
 "    ")
 
-        return textwrap.indent(f'''
-def stage_{stage}_reward():
-    target_action = {target_actions[stage]}
-        
-    # Target position computation
-{textwrap.indent(
-    get_func_inner_content(
-        interim_funcs[f'compute_target_position_stage{stage}']
-    ), "    "
-)}
-        
-    if current_selected_action != target_action:      
-        reward_components["afford_skill"] = -1.0
-    else:
-        # Target position reward computation
-{textwrap.indent(
-    get_func_inner_content(
-        interim_funcs[f'compute_target_pos_reward_stage{stage}']
-        ), "        "
-)}
-        reward_components["afford_pos"] = reward {"* 5" if stage == max(stages) else ""}
-    
-    if cur_info["stage{stage}_success"]:
-        reward_components["success"] = 10.0
-    
-    return reward_components''', 
-"    ")
-    
     # Generate full reward computation function
     reward_stages = "\n".join(
         # textwrap.indent(generate_stage_reward_func(stage), "    ")
@@ -310,7 +278,7 @@ def stage_{stage}_reward():
 
     stage_selection_logic = "\n\n"
     for stage in stages:
-        stage_selection_logic += f"    if self.cur_stage=={stage}:\n"
+        stage_selection_logic += f"    if self.cur_stage == {stage}:\n"
         stage_selection_logic += f"        reward = stage_{stage}_reward()\n"
 
     stage_selection_logic += "\n\n"
@@ -319,13 +287,13 @@ def stage_{stage}_reward():
         stage_selection_logic += f"    if (self.cur_stage == {stage}) and cur_info[\"stage{stage}_success\"]:\n"
         stage_selection_logic += f"        self.cur_stage = {stage + 1}\n"
 
-    
+
 
     skill_reward_str = textwrap.dedent(f'''
 def skill_reward(self, prev_info, cur_info, action, **kwargs):
     """
     Compute reward based on previous and current stage information.
-                                          
+
     Args:
         prev_info (dict): Previous stage information
         cur_info (dict): Current stage information
@@ -351,14 +319,14 @@ def skill_reward(self, prev_info, cur_info, action, **kwargs):
 
     return reward
 ''')
-    
+
     eval_func_str = \
 """def evaluate(self):
     info = self._get_obs_info()
 """
     for stage in stages:
         eval_func_str += textwrap.indent(interim_funcs[f'stage{stage}_success'], "    ") + "\n\n"
-    
+
 
     for stage in stages:
         eval_func_str += f"    info[\"stage{stage}_success\"] = stage{stage}_success(info)" + "\n"
@@ -371,7 +339,7 @@ f"""
 
     return info
 """
-    
+
     return {
         "skill_reward": skill_reward_str,
         "evaluate": eval_func_str
@@ -380,7 +348,7 @@ f"""
 
 def get_func_inner_content(func_str):
     lines = func_str.splitlines()
-    
+
     # Remove the function definition lines (handles multi-line 'def' statements)
     def_lines_end = 0
     in_def = False
@@ -397,15 +365,15 @@ def get_func_inner_content(func_str):
     else:
         # No function definition found
         return ''
-    
+
     # Remove the function header lines
     lines = lines[def_lines_end:]
-    
+
     # Remove the docstring if present
     def is_docstring_start(line):
         stripped = line.strip()
         return (stripped.startswith('"""') or stripped.startswith("'''"))
-    
+
     def remove_docstring(lines):
         if not lines:
             return lines
@@ -420,15 +388,15 @@ def get_func_inner_content(func_str):
                     return lines[i+1:]
             return []  # Docstring not properly closed
         return lines
-    
+
     lines = remove_docstring(lines)
-    
+
     # Remove any lines that are return statements
     def remove_return_statements(lines):
         return [line for line in lines if not line.lstrip().startswith('return')]
-    
+
     lines = remove_return_statements(lines)
-    
+
     # Dedent the remaining lines
     def dedent_lines(lines):
         import sys
@@ -441,9 +409,9 @@ def get_func_inner_content(func_str):
         if min_indent == sys.maxsize:
             min_indent = 0
         return [line[min_indent:] for line in lines]
-    
+
     dedented_lines = dedent_lines(lines)
-    
+
     # Join the lines back into a single string
     return '\n'.join(dedented_lines)
 
@@ -458,12 +426,12 @@ def check_if_interim_funcs_complete(interim_funcs_dict):
     from pprint import pprint
     pprint(list(interim_funcs_dict.keys()))
     assert stages == list(range(len(stages))), "stage indices must be 0-indexed and consecutive"
-    
+
     for stage_i in stages:
         assert f"stage{stage_i}_success" in interim_funcs_dict, f"Stage {stage_i} doesn't have stage{stage_i}_success"
         assert f"compute_target_position_stage{stage_i}" in interim_funcs_dict, f"Stage {stage_i} doesn't have compute_target_position_stage{stage_i}"
         assert f"compute_target_pos_reward_stage{stage_i}" in interim_funcs_dict, f"Stage {stage_i} doesn't have compute_target_pos_reward_stage{stage_i}"
-    
+
 
 def get_intermediate_funcs_from_hist(hist, end_msg_ind, save_fn):
     '''
