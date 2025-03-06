@@ -14,6 +14,7 @@ setup(
         "Pillow",
         "redbaron",
         "setuptools",
-        "fire"
+        "fire",
+        "tensorboard"
     ]
 )

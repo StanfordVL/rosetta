@@ -1,8 +1,8 @@
 from rosetta.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon
 from rosetta.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon
 
-from rosetta.prompt_message import PromptMessage
-from rosetta.utils import *
+from rosetta.prompts.prompt_message import PromptMessage
+from rosetta.prompts.utils import *
 
 
 def get_error_data(
