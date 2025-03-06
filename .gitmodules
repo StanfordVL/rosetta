@@ -1,0 +1,6 @@
+[submodule "stable-baselines3"]
+	path = stable-baselines3
+	url = https://github.com/JamesKrW/stable-baselines3.git
+[submodule "ManiSkill"]
+	path = ManiSkill
+	url = https://github.com/haosulab/ManiSkill.git
