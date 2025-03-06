@@ -1,8 +1,8 @@
-from feedback_to_reward.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon
-from feedback_to_reward.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon
+from rosetta.maniskill.pipelines.error_code_long_horizon import direct_evaluation_run_code as error_test_longhorizon
+from rosetta.maniskill.pipelines.error_code_short_horizon import direct_evaluation_run_code as error_test_shorthorizon
 
-from feedback_to_reward_prompts.prompt_message import PromptMessage
-from feedback_to_reward_prompts.utils import *
+from rosetta.prompt_message import PromptMessage
+from rosetta.utils import *
 
 
 def get_error_data(
