@@ -14,7 +14,7 @@ theme:
     - toc.integrate
 
 # Copyright footer
-copyright: Copyright © 2025, RAGEN Team
+copyright: Copyright © 2025, Stanford SVL
 
 # Additional settings
 markdown_extensions:
