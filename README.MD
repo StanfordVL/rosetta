@@ -42,7 +42,7 @@ Running examples in the demo:
 python rosetta/run_exp/main_from_csv.py --config_yaml demo/demo.yml
 ```
 
-After the runningh, the following directory structure will be created:
+After running the following directory structure will be created:
 
 ```
 demo/
@@ -62,5 +62,5 @@ bash train_sbatch.sh
 
 The training process will generate:
 - Video demonstrations of the trained policies
-- Sample demonstrations for evaluation
 - Trained model weights
+- ...
