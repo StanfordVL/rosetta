@@ -1,7 +1,7 @@
 # Rosetta
 
 ## Overview
-ROSETTA is a framework that leverages foundation models to interpret natural language preferences, creating multi-stage reward functions that can be implemented through automated code generation. The framework integrates with the ManiSkill environment and Stable-Baselines3 to enable robotic manipulation skills through reinforcement learning.
+ROSETTA is a framework that leverages foundation models to interpret natural language preferences, creating multi-stage reward functions that can be implemented through automated code generation.
 
 
 ## Structure
