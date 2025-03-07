@@ -36,31 +36,25 @@ cd ../
 ```
 
 ### Quickstart
-Running examples in the demo:
+We provide the preference examples:
 
 ```bash
 python rosetta/run_exp/main_from_csv.py --config_yaml demo/demo.yml
 ```
 
-After running the following directory structure will be created:
+The reward functions will be generated in the result folders:
 
 ```
 demo/
-├── config/    # Configuration files (one folder per data point in the CSV)
+├── config/    # one config folder per preference
 ├── jsonl/     # CSV data converted to JSONL format
-├── result/    # Results (k folders per data point based on number of generated reward functions)
+├── result/    # n result folders per perference based on hyper-param, each folder contains training scripts and reward functions
 └──...
 ```
 
-
-To train policies based on the generated reward functions:
+You can train the policy by running:
 
 ```bash
 cd demo/result/[experiment_name]/
 bash train_sbatch.sh
 ```
-
-The training process will generate:
-- Video demonstrations of the trained policies
-- Trained model weights
-- ...
