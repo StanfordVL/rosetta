@@ -128,12 +128,13 @@ def gen_result_dir(
 
     # Baseline-specific kwargs
     baseline_kwargs = {}
-    if prompt_design=="eureka":
-        with open(os.path.join(prev_dir_path, 'exp/results.json'), 'r') as f:
-            objective_feedback = json.load(f)
-        inner_num_gen = num_gen
-        num_gen = 1
-        baseline_kwargs = {"objective_feedback": objective_feedback, "inner_num_gen": inner_num_gen}
+    # Now we use reward only version
+    # if prompt_design=="eureka":
+    #     with open(os.path.join(prev_dir_path, 'exp/results.json'), 'r') as f:
+    #         objective_feedback = json.load(f)
+    #     inner_num_gen = num_gen
+    #     num_gen = 1
+    #     baseline_kwargs = {"objective_feedback": objective_feedback, "inner_num_gen": inner_num_gen}
 
     while attempt < num_retry + num_gen:
         attempt += 1

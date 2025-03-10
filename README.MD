@@ -39,7 +39,7 @@ cd ../
 We provide the preference examples:
 
 ```bash
-python rosetta/run_exp/main_from_csv.py --config_yaml demo/demo.yml
+python rosetta/run_exp/main.py --config_yaml demo/demo.yml
 ```
 
 The reward functions will be generated in the result folders:

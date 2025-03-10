@@ -15,6 +15,7 @@ setup(
         "redbaron",
         "setuptools",
         "fire",
-        "tensorboard"
+        "tensorboard",
+        "numba"
     ]
 )

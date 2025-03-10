@@ -33,8 +33,8 @@ def text2reward(
 
     user_code_msg = PromptMessage(role="user", content=get_prompt_content(f"{content_version}/fcode_user"))
     user_code_msg.fill_dynamic_fields({
-        "environment_desc": get_prompt_content.get(f"{content_version}/env_specific/{env_id}"),
-        "env_class_desc": get_prompt_content.get(f"{content_version}/env_class_desc"),
+        "environment_desc": get_prompt_content(f"{content_version}/env_specific/{env_id}"),
+        "env_class_desc": get_prompt_content(f"{content_version}/env_class_desc"),
         "documentation": get_prompt_content(f"documentation/{act_space}"),
         "compute_dense_reward": prev_funcs.get("compute_dense_reward", None),
         "original_preference": human_input
