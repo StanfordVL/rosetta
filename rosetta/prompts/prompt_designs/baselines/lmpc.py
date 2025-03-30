@@ -32,7 +32,7 @@ def lmpc(
     error=0
     while i<inner_num_gen:
         try:
-            print(f"Generation {i} for the eureka starts")
+            print(f"Generation {i} for the lmpc starts")
             tmp_hist = []
             tmp_latest_funcs={}
 
@@ -84,7 +84,7 @@ def lmpc(
             all_funcs.append(tmp_latest_funcs)
             i+=1
         except Exception as e:
-            print("Error in eureka generation ",i)
+            print("Error in lmpc generation ",i)
             print(traceback.format_exc())
             error+=1
         if error>3:
