@@ -29,18 +29,7 @@ You must carefully analyze the feedback and provide a new, improved reward funct
 def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
 ```
 
-2. Structure your reward according to these principles:
-   - Split the task into stages and provide rewards incrementally
-   - Consider interdependencies between different task stages
-   - Avoid counterproductive short-term incentives
-   - Handle batched operations correctly (num_env dimension)
-
-3. Follow reward function best practices:
-   - Use comprehensive comments to explain your reasoning
-   - Be consistent with the interface of previous implementations
-   - Incorporate the specific feedback provided
-
-## Available Classes and Methods:
+## Available APIs:
 
 ### Actor Class (Non-robot objects in scene)
 #### Properties:
