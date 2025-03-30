@@ -8,6 +8,7 @@ from .rosetta_lh.rosetta_lh import rosetta_lh
 # Baselines
 from .baselines.eureka import eureka
 from .baselines.text2reward import text2reward
+from .baselines.lmpc import lmpc
 
 # Ablations
 from .ablations.no_follow_up import no_follow_up

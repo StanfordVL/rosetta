@@ -16,6 +16,7 @@ DESIGN_NAME_TO_FUNC = {
     # Baselines
     "eureka": (eureka, "baselines/eureka"),
     "t2r": (text2reward, "baselines/text2reward"),
+    "lmpc": (lmpc, "baselines/lmpc"),
     
     # Ablations
     "no_grounding": (no_grounding, "contcontrol/no_grounding"),
