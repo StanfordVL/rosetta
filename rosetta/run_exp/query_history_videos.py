@@ -90,6 +90,8 @@ def single_build_history_and_option_folder(cur_folder_path: str,config_dir_path:
             if feedback_text is None:
                 feedback_text = feedback_json.get("full_feedback",None)
             if feedback_text is None:
+                feedback_text = feedback_json.get("preference",None)
+            if feedback_text is None:
                 feedback_text = "No feedback"
                 print(f"{video_paths} has no feedback")
         feedback_save_path=os.path.join(save_path,config_dir_name,f'your_feedback_on_video_{human_idx}.txt')

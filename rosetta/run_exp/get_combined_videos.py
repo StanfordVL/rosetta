@@ -39,8 +39,8 @@ def main(config):
         if not round_dir.exists():
             # Create round directory if it doesn't exist
             batch_build_history_and_option_folder(
-                str(path / "config_dir"),
-                str(path / "results_dir"),
+                str(path / "configs"),
+                str(path / "results"),
                 config.num_ancestors,
                 str(round_dir)
             )
@@ -177,5 +177,9 @@ def remove_mapping_files(base_dir: Path):
 # remove_mapping_files(Path("./output_dir"))
 
 if __name__ == "__main__":
-    fire.Fire(add_eval_form_links)
+    tyro.cli(
+        main,
+        config,
+        description="Combine videos from multiple paths into a single directory structure.",
+    )
     
