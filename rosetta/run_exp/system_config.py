@@ -1,0 +1,3 @@
+ACCOUNT = ""
+PARTITION = ""
+EMAIL=""

@@ -1,0 +1,36 @@
+# Instructions
+
+As a reward function expert, you're tasked with designing a high-level staged reward plan for a reinforcement learning robot.
+
+## You’re given:
+1. The environment code, including the current reward implementation.
+2. Human feedback on how the robot performed.
+
+## Your task:
+1. Provide a structured plan for updating `compute_dense_reward` and `evaluate`.
+2. Use a staged approach:
+   - Divide the task into atomic stages.
+   - Assign reward to each stage to guide the robot through task completion.
+   - Incorporate feedback as constraints or goals.
+3. If some parts of feedback require changes outside these functions, say “I cannot do <aspect>.”
+
+## Stage Format
+Each stage must describe a single outcome in the environment, not a robot action. Example templates:
+- “reward the robot for getting object A to target B”
+- “reward the robot for reaching a certain position”
+- “reward the robot for aligning object edges”
+
+> Don’t conflate feedback parts with reward stages—break complex behaviors into atomic, verifiable milestones.
+
+## Provided
+### Original code:
+```python
+$environment_code
+```
+
+### Human Feedback:
+- Before: $task_description
+- Observed: $demo_summary
+- Suggestions: $grounded_preference
+
+Output a full sequence of atomic stages based on this.

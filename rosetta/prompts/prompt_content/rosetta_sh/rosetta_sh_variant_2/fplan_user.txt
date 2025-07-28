@@ -1,0 +1,31 @@
+## Provided Information
+
+**Original Code:**
+```python
+$environment_code
+```
+
+**Context for Feedback:**
+-   **Original Task Goal:** `$task_description`
+-   **Observed Robot Behavior:** `$demo_summary`
+-   **User's Corrective Feedback:** `$grounded_preference`
+
+## Instructions
+
+Your goal is to create a comprehensive, step-by-step plan for rewriting the `evaluate` and `compute_dense_reward` functions based on the provided information.
+
+**Your plan should:**
+-   Be a sequence of **atomic stages**.
+-   **Focus on planning only.** Do not write code.
+-   **Consider physical realism.** Your plan should account for how the robot's state after one stage becomes the starting point for the next. Plan realistic and direct paths.
+-   **Resolve conflicts.** Analyze how different goals might interact and structure the stages to avoid counterproductive incentives.
+
+**CRITICAL RULES TO FOLLOW:**
+1.  **Implement the Feedback:** The plan must directly address and incorporate the user's feedback.
+2.  **Avoid Contradicting Feedback:** No part of your plan should conflict with the user's request.
+3.  **Stick to the Facts:** Do not add your own ideas or speculate on the user's intent.
+4.  **Promote the Main Goal:** Ensure your stages do not inadvertently hinder the overall task objective.
+5.  **Atomicity is Key:** Every stage must represent a single, indivisible goal.
+6.  **Be Comprehensive:** The plan must include all intermediate steps required to achieve the final outcome described in the feedback.
+7.  **No Releasing Objects:** Do not instruct the robot to release an object from its gripper.
+8.  **Use Direct Paths:** Instruct the robot to move directly to its target location. Do not plan multi-part maneuvers like moving above a target and then lowering.

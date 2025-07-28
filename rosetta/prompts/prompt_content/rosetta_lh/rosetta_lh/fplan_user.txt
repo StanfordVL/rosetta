@@ -1,0 +1,27 @@
+## Original Code: 
+```python
+$environment_code
+```
+
+## Original Task Goal: $task_description
+
+## Simulation Environment Setup: $setup_description
+
+## Demonstration Summary: $demo_summary
+
+## Human Feedback: $grounded_preference
+
+## New goal: $new_description
+
+
+Think step-by-step to make a high-level plan for writing `skill_reward`. The plan should be a series of stages.
+- Don't code yet, just plan the stages.
+- Consider dependencies and conflicts between task stages, and create a plan that doesn't do anything counterproductive.
+
+RULES YOU MUST FOLLOW:
+1. Use ONLY the stage templates you've been given.
+2. Incorporate human feedback as given.
+3. Do not add anything that contradicts the feedback.
+4. Do not invent your own changes or speculate about what the feedback is going for.
+5. Try accomplish the task goal with minimal stages. Long plans are harder to train on.
+6. Make the plan complete - think about all the atomic stages the robot needs to achieve every part of the feedback, not just the final ones.

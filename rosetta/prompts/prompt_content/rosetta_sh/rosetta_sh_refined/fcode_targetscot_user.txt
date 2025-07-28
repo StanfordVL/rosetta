@@ -1,0 +1,11 @@
+- Verify that each of the three coordinates is considered for every position and offset in the code. Common pitfalls:
+  - Forgetting the z-component 
+  - Ignoring one or two coordinates when setting a target position. If the robot is not given constraints in some axis, it could do anything, leading to a crash into something else. 
+- Verify that specific target positions are always set. Common pitfalls:
+  - Simply incentivizing the robot to go in a certain direction (e.g. "down" or "below an object"). It should always be pushed toward a SPECIFIC POINT IN SPACE, or it won't stop and will fly wildly.
+
+1. Write out your verification step-by-step.
+2. Edit the code as needed according to your explanation. Comment your changes.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole method, not just your edits. 
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 

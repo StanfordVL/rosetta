@@ -1,0 +1,14 @@
+**On the topic of masking rewards for different stages:**
+
+- **Does your total reward always increase with progress?** To properly incentivize the robot, the reward should be monotonic. Once a stage is complete, its reward should remain active to prevent the robot from being penalized for moving on to the next stage.
+  - **Example:** If the task is to grasp an object and then move it, the "grasp" reward should persist even after the object is successfully being moved.
+- **Are your reward masks applied correctly?** You must not mask a stage's reward based on its own completion criteria. This creates a chicken-and-egg problem where the robot gets no reward signal until it has already completed the goal.
+  - **Incorrect Example:** Masking a reward for moving `objA` to `objB` with the condition `info["is_objA_at_objB"]`. This provides no gradient to learn from.
+  - **Correct Approach:** The reward for a stage should be enabled by the completion of the *previous* stage.
+
+1.  Verify the above points in your code.
+2.  If corrections are needed, make them as concisely as possible.
+3.  Output only the methods that you modify.
+4.  When modifying a method, provide its complete source code, not just the changed lines.
+5.  Do not add any new helper methods; restrict your edits to `compute_dense_reward` and `evaluate`.
+6.  Add comments to explain your changes where necessary.

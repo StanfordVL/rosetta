@@ -1,0 +1,32 @@
+You will be given two functions that make up a reward function in a robot reinforcement learning environment. One, `compute_dense_reward`, computes the actual reward signal. The other, `evaluate`, compiles useful state information, including the success condition. You will also be given specific requirements, environment code, and documentation. Please verify whether the code incorporates the requirements and edit it if needed.
+
+Requirements to verify:
+- Verify that each of the three coordinates is considered for every position and offset in the code. Common pitfalls:
+  - Forgetting the z-component 
+  - Ignoring one or two coordinates when setting a target position. If the robot is not given constraints in some axis, it could do anything, leading to a crash into something else. 
+- Verify that specific target positions are always set. Common pitfalls:
+  - Simply incentivizing the robot to go in a certain direction (e.g. "down" or "below an object"). It should always be pushed toward a SPECIFIC POINT IN SPACE, or it won't stop and will fly wildly.
+
+1. Write out your verification step-by-step.
+2. Edit the code as needed according to your explanation. Comment your changes. DO NOT change the function signatures.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole method, not just your edits. 
+5. Don't introduce new methods, not even helper methods. ONLY edit `compute_dense_reward` and `evaluate`. 
+
+# Current reward code 
+
+## `evaluate` 
+
+$evaluate 
+
+## `compute_dense_reward`
+
+$compute_dense_reward
+
+# Rest of environment 
+
+$env_code_no_reward 
+
+# Documentation 
+
+$documentation

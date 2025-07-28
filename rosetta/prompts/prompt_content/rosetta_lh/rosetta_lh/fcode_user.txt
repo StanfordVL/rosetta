@@ -1,0 +1,110 @@
+Excellent. Now write the relevant code for each stage.
+
+# Instructions:
+1. Don't add your own helper methods. Only edit what I've told you to edit.
+2. Go through the coding tips below.
+3. Explain your implementation.
+4. If there are aspects of the feedback that are physically impossible, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+5. Number of stages should match the number of stages in the plan. It can be different from the number of stages in the original code.
+# How to calculate target positions and position rewards
+
+### Coding best practices 
+- Pay attention to the `Original Code` and the `Simulation Environment Setup` given to you earlier. 
+- All positions are numpy arrays of shape (3,). Make sure you don't modify the content in info dictionaries.
+= Don't worry about missing arguments
+
+### How to set a target position for the robot to pick at/place at.
+- Object coordinates are x, y, and z coordinats. **Explicitly reason about every coordinate when setting the target position**.
+- Note that those are x, y, z coordinates of the *center* of objects.
+  - So when setting target positions or getting object positions, if you want the top, bottom, or sides of an object, add the right offsets.
+  - Otherwise, make sure you're reasoning about the center.
+- Consider common sense physical issues. **Read the environment code to understand geometry and dimension values.** Examples:
+  - A box has walls, so if you want to put something inside the box, consider its wall width. 
+  - A target might be a circle or a square - if you want to put something at the edge of the target, consider its shape. 
+- Remember that direction matters, not just distance. Let's say your intended target position is two block side-lengths away from a block center. You can't take the block center, then tell the robot to go two block side-lengths away from that. It could go two block side-lengths in any direction! You have to calculate your intended position, unambiguously.
+
+### How to write a reward component that gets the robot to choose the right location
+- Add a reward component that minimizes the difference between the position the robot is currently planning to go to, and the target position you set
+- Normalize and smooth these differences with a function like `np.tanh`. 
+  - For example, if the robot has selected position `current_selected_pos` and you set target position `target_pos`, you can take the hyperbolic tangent of the norm of the difference between these two.
+  - You can also increase the coefficient on the norm within the `np.tanh` to encourage `target_pos` more aggressively, you can subtract from 1.0 so that the overall reward ranges from 0 to 1 and increases as distance decreases, and/or you can use a different normalizing function based on the reward landscape you want. 
+  - **Design based on what we need from this reward component.**
+- DON'T give a step function-like boost that only activates when the object has reached its target position. If you do this, the agent won't be able to get started.
+
+# Documentation of function inputs
+Functions take in two arguments from the environment: `prev_info` and `cur_info`. These are dictionaries with the following keys:
+
+$info_keys
+
+`prev_info` represent the environment state BEFORE `action` was taken and `cur_info` represent the state AFTER `action` was taken.
+
+## Simulation Environment Setup: $setup_description
+
+## Demonstration Summary: $demo_summary
+
+## Human Feedback: $grounded_preference
+
+## New Task Goal: $new_description
+
+# Your task:
+
+Fill out the TODOs in this markdown to get reward. Fill out a new copy of the markdown for every stage. Write a short chain of reasoning before each code block to explain your reasoning.
+
+```markdown
+stage N target action: # TODO: select [`pick`, `place`, `push`]. Select EXACTLY the one given to you in the plan - DO NOT make your own judgement call.
+
+```python
+def compute_target_position_stageN(self, prev_info, cur_info):
+    """
+    Defines the target position for the robot's action - the location it needs to pick at/place at/push to.
+    Has no return. The function ends in the definition of `target_pos_1` and `target_pos_2`. 
+    
+    Arguments:
+        - `self (BaseEnv)`: gives access to environment attributes and method calls.
+        - `prev_info (dict[str, Any])`: state representation of the environment state BEFORE `action` was taken.
+        - `cur_info (dict[str, Any])`: same as `prev_info`, except from the state AFTER `action` was taken.   
+    """
+    # TODO: implement target position for stageN's target action based on environment. 
+    # If the action is `pick` or `place`, target_pos_1 must be a 3D position indicating the target position for the action, and target_pos_2 must be None.
+    # If the action is `push`, target_pos_1 must be a 3D position indicating the target starting position for the push action, and target_pos_2 must be a 3D position indicating the target ending position for the push action.
+    target_pos_1 = ...
+    target_pos_2 = ...
+```
+
+```python
+def compute_target_pos_reward_stageN(self, prev_info, cur_info, current_selected_pos_1, current_selected_pos_2, target_pos_1, target_pos_2):
+    """
+    Sets a reward to encourage the robot to take the action at `target_pos_1` and `target_pos_2`. This reward should be dense, setting a continuous-valued penalty for any difference between `current_selected_pos_1` and `current_selected_pos_2` (the location the robot IS CURRENTLY PLANNING to pick at/place at/push to) and `target_pos_1` and `target_pos_2` (the location the robot SHOULD pick at/place at/push to).
+    Has no return. The function ends in the definition of `reward`.
+
+    Arguments:
+        - `self (BaseEnv)`: gives access to environment attributes and method calls.
+        - `prev_info (dict[str, Any])`: state representation of the environment state BEFORE `action` was taken.
+        - `cur_info (dict[str, Any])`: same as `prev_info`, except from the state AFTER `action` was taken.
+        - `current_selected_pos_1`  and `current_selected_pos_2` (numpy.ndarray): the pos the robot IS CURRENTLY PLANNING TO take the action at
+        - `target_pos_1 (numpy.ndarray)` and `target_pos_2 (numpy.ndarray)`: `target_pos` defined in `compute_target_position_stageN` - the pos the robot SHOULD take the action at
+    
+    Notice that current_selected_pos_2 and target_pos_2 are None if the action is `pick` or `place`. Do not use them in this case.
+    This function will only be called if selected action equals target action. In other words, current_selected_pos_2 and target_pos_2 will be both None or both numpy arrays.
+    """
+    reward = # TODO implement a *dense and normalized* reward for guiding the robot to do `target_action` at `target_pos`s, i.e. align `current_selected_pos_1` and `current_selected_pos_2` with `target_pos_1` and `target_pos_2`. Use the `target_pos_1` and `target_pos_2` param, don't calculate your own.
+    # - Feel free to use normalization functions like `np.tanh`. Your reward MUST be normalized to between -1 and 0.
+    # - Ensure your reward is *dense*. Do not give a sudden boost for reaching the target position. Instead, make sure your reward implementation gradually and continuously guides the robot to target positions. Otherwise, the robot won't be able to get started.
+```
+
+```python
+def stageN_success(info):
+    """
+    Return true if the robot has successfully completed stageN, else return false.
+
+    Arguments:
+        - `info (dict[str, Any])`: state representation of the current environment state.
+    
+    Returns:
+        - `bool`: True if the robot has successfully completed stageN, else False.
+    """
+    # TODO
+```
+```
+
+Don't write `skill_reward` as a whole. Only write the functions I asked for.

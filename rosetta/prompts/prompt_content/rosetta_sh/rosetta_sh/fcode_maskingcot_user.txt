@@ -1,0 +1,16 @@
+For masking the rewards:
+- Did you ensure reward **never decreases** during the progression of the task, so that the robot isn't disincentivized to make progress?
+  - Only mask on genuine prerequisites 
+  - Keep the reward enabled even when the stage is complete
+  - For example, if the robot needs to grasp an object to carry it to a location and then let it go, give the grasp reward not only when the gripper is ready to grasp, but also after the object has been carried to the location and ungrasped.
+- Did you mask any stage reward components prematurely?
+  - Example: reward component guides the robot to put `objA` next to `objB`. Masking this with `info["is_objA_next_to_objB"]` means it'll only get reward after it succeeds, so it will never get started.
+  - Example: reward component guides the robot to travel to point `target_pos`. Masking this with `info["is_near_target_pos"]` means it'll only get reward after it succeeds, so it will never get started.
+
+
+1. Verify.
+2. If edits are necessary, make minimal versions of them.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole edit method, not just your edits.
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+6. Comment your code as needed.

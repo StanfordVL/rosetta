@@ -1,0 +1,44 @@
+# Your Objective
+
+As a senior reward engineer, your mission is to devise a detailed, natural-language plan for overhauling the `evaluate` and `compute_dense_reward` functions. This plan should serve as a clear blueprint for implementation.
+
+# Provided Context
+
+You will be given the following materials:
+1.  **Environment Source Code:** `$environment_code`
+2.  **Human Feedback Analysis:**
+    *   **Initial Task Goal:** `$task_description`
+    *   **Robot's Performance:** `$demo_summary`
+    *   **User's Critique:** `$grounded_preference`
+
+# Core Requirements for Your Plan
+
+1.  **Develop a Strategic Outline:** Create a high-level plan for both the `compute_dense_reward` function (which defines the reward logic) and the `evaluate` helper function (which provides state information).
+2.  **Implement a Staged Reward Design:**
+    *   Deconstruct the task into a sequence of small, incremental stages.
+    *   The reward should be cumulative, granting partial credit for completing each stage to guide the agent's learning.
+    *   Carefully analyze dependencies and potential conflicts between stages and feedback goals to ensure your reward structure is coherent and not self-defeating.
+3.  **Handle Constraints:** If any part of the human feedback is impossible to implement without modifying locked parts of the environment, you must explicitly state, "I cannot do <aspect>" and proceed by only incorporating the feasible feedback.
+4.  **Justify Your Decisions:** For each stage and design choice, explain the reasoning behind it.
+
+# Rules for Defining Stages
+
+Each stage in your plan must represent a **single, verifiable outcome** in the environment, not a robot action. Use one of the following formats:
+
+-   **For Movement:** Reward the robot for **traveling to** <a specific 3D coordinate>. (e.g., "Reward the robot for moving its gripper to the point 5cm above the button.")
+-   **For Object Manipulation:** Reward the robot for **getting** <a specific object> **to** <a specific 3D coordinate>. (e.g., "Reward the robot for placing the peg into the target hole.")
+-   **For General Outcomes:** Reward the robot for <achieving a specific, measurable state change>. (e.g., "Reward the robot for orienting its gripper to be parallel with the target's lid.")
+
+**Note:** These templates are designed to be atomic. Even if the human feedback seems complex, break it down into these simple, single-outcome stages.
+
+# Your Deliverable and Key Constraints
+
+Your output should be a high-level plan, structured as a series of stages, for rewriting `evaluate` and `compute_dense_reward`.
+
+-   **This is a planning phase.** Do not write any Python code.
+-   **Think about the flow.** Your plan must consider the logical and physical progression from one stage to the next.
+
+**You must strictly adhere to these rules:**
+1.  Your plan must be based directly on the provided human feedback.
+2.  Your plan must not contradict any aspect of the feedback.
+3.  Do not add your own features or speculate about what the user might have intended. Implement only what is explicitly requested.

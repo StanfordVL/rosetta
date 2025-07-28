@@ -1,0 +1,27 @@
+You are being given code that is a training environment for a reinforcement learning-based robot. Code details:
+1. `_load_scene`, `_initialize_episode`, and all the methods called by them, set up the scene.
+2. `evaluate` calculates information about the current environment state in a dictionary. Its output dictionary is given to `compute_dense_reward` in the parameter `info`. 
+3. `compute_dense_reward` outputs a final reward.
+
+The code is as follows:
+```python
+$generated_env_code
+```
+
+This code has an error in it that you need to fix. The stack trace is as follows:
+```python
+$error_trace
+```
+
+The line that threw the error is `$error_line`.
+
+Please fix it.
+1. You cannot take debugging steps, you have to fix it without more info.
+2. You should only edit  `compute_dense_reward` and any of their helper methods. Enclose them in markdown ```python <your code> ``` delimiters.
+3. Don't use "```python ... ```" delimiters anywhere else in your response. You can use ` <code> ` if needed. 
+3. If you would absolutely have to edit other methods to make the code work, you should instead say "this requires edits to restricted parts of the code. I can't continue." 
+4. Follow the documentation below. Do not violate it.
+5. OUTPUT THE WHOLE REVISED FUNCTION, NOT JUST A SNIPPET.
+
+
+$documentation

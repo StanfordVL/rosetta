@@ -1,0 +1,16 @@
+- Did you implement *continuous* rewards specifically when (and exclusively when) you wanted the agent to progressively move toward a particular state? In other words, using a smooth function that provides increasingly higher rewards as the agent approaches the correct position, instead of a binary function that only rewards upon arrival.
+  - Distance metrics, angular differences, velocity measurements - these are all continuous variables suitable for smooth, continuous reward signals!
+  - Navigation to coordinates progressively and gripper adjustment to specific positions gradually - ALWAYS CONTINUOUS. 
+- Did you PREVENT making *negative feedback* continuous? Examples: 
+  - If you want the agent to maintain low speed, a speed penalty should not be continuous - you simply want it to remain under a particular speed limit, not progressively approach a specific velocity. 
+  - Again, IF YOU WANT THE AGENT TO MAINTAIN LOW SPEED, SIMPLY ESTABLISH A FIXED SPEED LIMIT THAT SHOULD NOT BE EXCEEDED. CONTINUOUS REWARD DOES NOT APPLY HERE.
+  - If you want the agent to maintain gripper closure, the penalty for gripper opening should not be continuous - you simply want it to remain under a certain opening threshold, not progressively approach a specific opening amount.
+- Did you ensure the agent must actually achieve its target position? Common mistakes:
+  - Setting a "close" threshold that is wider than the "reached" threshold for a target position, then not requiring the agent to continue moving once it's "close" even if it hasn't "reached".
+
+1. Verify.
+2. If modifications are required, create minimal versions of them.
+3. Only output methods you are modifying. 
+4. If you are modifying a method, output the complete modified method, not just your changes.
+5. Don't create new methods, not even utility methods. Just modify `compute_dense_reward` and `evaluate`. 
+6. Add comments to your code as appropriate.

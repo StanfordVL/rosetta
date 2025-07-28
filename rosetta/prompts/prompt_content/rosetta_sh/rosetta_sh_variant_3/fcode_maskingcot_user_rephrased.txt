@@ -1,0 +1,14 @@
+For reward masking:
+- Did you ensure the reward only increases over time, never decreasing as the task progresses?
+  - Rewards should remain active even after a stage is completed.
+  - For instance, grasping an item should still earn reward even after the item is being transported or released.
+- Did you accidentally hide stage rewards too early?
+  - Bad: masking "move object A next to object B" using `is_objA_next_to_objB`. This blocks any early reward signal and stops learning.
+  - Bad: masking "go to target" with `is_near_target_pos`. That means no reward until it's already there!
+
+1. Check your design.
+2. If any fix is needed, change as little as possible.
+3. Show only edited methods.
+4. For modified methods, include the entire method.
+5. Do not add new helper methods. Only touch `compute_dense_reward` and `evaluate`.
+6. Use comments if needed.

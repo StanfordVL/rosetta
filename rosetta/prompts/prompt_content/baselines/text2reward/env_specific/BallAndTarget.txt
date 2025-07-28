@@ -1,0 +1,5 @@
+class BallAndTargetEnv(BaseEnv):
+    self.obj : RigidObject # ball (it's a large football) in the environment
+    self.goal_radius = 0.1 # in meters
+    self.agent : PandaRobot # a Franka Panda robot
+    self.goal_region : TargetObject # 2D goal region in the environment

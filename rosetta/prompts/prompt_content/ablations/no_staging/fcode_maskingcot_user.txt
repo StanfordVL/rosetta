@@ -1,0 +1,12 @@
+For masking the rewards:
+- Did you ensure reward **never decreases** during the progression of the task, so that the robot isn't disincentivized to make progress?
+  - Only mask on genuine prerequisites 
+  - For example, if the robot needs to grasp an object to carry it to a location and then let it go, give the grasp reward not only when the gripper is ready to grasp, but also after the object has been carried to the location and ungrasped.
+
+
+1. Verify.
+2. If edits are necessary, make minimal versions of them.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole edit method, not just your edits.
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+6. Comment your code as needed.

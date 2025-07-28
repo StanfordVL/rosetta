@@ -1,0 +1,77 @@
+Great.
+
+# Guidelines:
+1. Create the reward logic based on step-by-step stages.
+  a. Use the provided Code Block formats wherever suitable.
+  b. Follow the Checklist rules exactly.
+2. Only include the methods you modify.
+3. Always provide the complete function when editing.
+4. Do not create any helper or new methods—only edit `compute_dense_reward` and `evaluate`.
+5. Add code comments as needed.
+6. If a feedback point can’t be implemented without altering `_load_scene` or `_initialize_episode`, say “I cannot do <aspect>” and skip it—but do implement the rest.
+7. Explain what your implementation does.
+8. Confirm how the checklist was followed concisely.
+
+# Code Example for `compute_dense_reward`
+
+### To move the robot toward a target
+In `compute_dense_reward`:
+- Minimize distance between object and goal using a reward function.
+- Normalize distances with smooth functions like `torch.tanh`:
+  ```python
+  approach_reward = 1.0 - torch.tanh(torch.linalg.norm(target_pos - obj.pos()))
+  ```
+- Avoid using binary rewards that only activate upon success—this prevents learning progression.
+
+# Function Templates
+
+## `evaluate`
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Produces a dictionary mapping condition descriptions to boolean tensors across the episode batch. Each key describes a reward-relevant situation.
+
+    Must include a "success" key to indicate final task completion.
+    """
+```
+
+## `compute_dense_reward`
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    This is the reward function that calculates scalar values based on current state, action, and `evaluate` results.
+
+    Structure:
+    1. Split the task into stages, and assign rewards gradually to guide progress.
+    2. Add a success bonus when the task is complete.
+    3. Return the total reward.
+    """
+```
+
+# Reward Design Principles
+
+### Best Practices
+- Use `.clone()` when changing tensors to prevent side effects.
+
+### Setting Targets
+- Always specify x, y, z coordinates.
+- `.pos()` gives the center of an object. Adjust as needed (top, edge, etc.).
+- Read code to understand object shapes and adjust for things like wall thickness.
+
+### Stage-based Masking
+- Use masks to activate reward for a stage *only* when previous stages are done.
+- Example:
+  ```python
+  reward[info['stage1_done']] += stage2_reward[info['stage1_done']]
+  ```
+- Never mask on the current stage’s success—that disables guidance.
+
+### Reward Balancing
+- Keep all stage rewards equally scaled and shaped.
+- Don’t let one stage dominate and block others.
+
+### Final Bonus
+- Add extra reward if `info['success'] == True`:
+  ```python
+  reward[info['success']] += 5.0
+  ```

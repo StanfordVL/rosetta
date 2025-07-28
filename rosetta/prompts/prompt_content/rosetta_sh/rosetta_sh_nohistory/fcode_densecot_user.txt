@@ -1,0 +1,36 @@
+You will be given two functions that make up a reward function in a robot reinforcement learning environment. One, `compute_dense_reward`, computes the actual reward signal. The other, `evaluate`, compiles useful state information, including the success condition. You will also be given specific requirements, environment code, and documentation. Please verify whether the code incorporates the requirements and edit it if needed.
+
+Requirements to verify:
+- Verify that the reward is *dense* when, and ONLY when, you want the robot to gradually approach a certain state. "Dense" means a continuous function that gives more and more reward as the robot approaches the right position, rather than a step function only reward it once it's reached. 
+  - Distance, angular difference, velocity - all continuous values that can have dense, continuous rewards 
+  - Traveling to a location gradually and opening/closing a gripper to a certain point gradually - ALWAYS DENSE.
+- Verify that all *penalties* are NOT dense. Examples: 
+  - To slow the robot down, there should be a penalty on speed that is NOT dense. You want it to just stay below a specific speed, not get more reward the slower it is. 
+  - TO HAVE THE ROBOT GO SLOW, THE CODE SHOULD SIMPLY SET A CONSTANT UPPER BOUND ON SPEED. DENSE REWARD DOES NOT HELP HERE. 
+  - To have the robot to keep its gripper closed, the penalty on gripper opening should not be dense - you want it to stay below a certain opening, not get more reward the more closed it is. 
+- Verify that the code actually requires the robot to reach its target position. Common pitfalls: 
+  - Defining a "near" threshold that is larger than the "at" threshold for a target position, then not requiring the agent to move once it's "near" even if it's not "at". 
+
+1. Write out your verification step-by-step.
+2. Edit the code as needed according to your explanation. Comment your changes. DO NOT change the function signatures.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole method, not just your edits. 
+5. Don't introduce new methods, not even helper methods. ONLY edit `compute_dense_reward` and `evaluate`. 
+
+# Current reward code 
+
+## `evaluate` 
+
+$evaluate 
+
+## `compute_dense_reward`
+
+$compute_dense_reward
+
+# Rest of environment 
+
+$env_code_no_reward 
+
+# Documentation 
+
+$documentation

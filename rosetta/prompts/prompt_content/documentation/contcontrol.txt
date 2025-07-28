@@ -1,0 +1,49 @@
+# Documentation of classes, methods, and properties you can use when implementing `evaluate` and `compute_dense_reward`
+
+This is a parallel training environment with many episodes. Each pose, boolean description of the scene, etc. is therefore a `torch.Tensor` where the first dimension is the *batch dimension*. Each episode is independent, so you must calculate reward separately for each one. Specifically:
+  - `reward` is a `torch.Tensor` of scalar reward values for the batch of episodes. The first dimension is a batch of episodes, and the second dimension is the scalar reward value for that individual episode.
+  - For example, if you want to give a reward boost of 5.0 to exactly the episodes where the object is grasped, and you have already computed the `is_obj_grasped` tensor, you can say `reward["is_obj_grasped"] += 5.0`. 
+
+## `Actor` class
+Non-robot objects in scene are subclasses of `Actor`. 
+### Properties
+- `px_body_type`: `Literal["kinematic", "static", "dynamic"]` indicating physics behavior - static (immovable), dynamic (physics-affected), kinematic (not physics-affected).
+  - The robot cannot move "static" and "kinematic" objects. If a feedback asks you to change their locations, reject that part.
+- `name`: `str` acting as the unique identifier for the actor
+- `merged`: `bool` indicating if the actor is a composite of multiple other actors
+- `pose`: `Pose` object representing the current state
+    - `Pose` object: dataclass
+        - `pose.p` is a position
+        - `pose.q` is a quaternion indicating orientation
+        - `pose.raw_pose` is concatenation of `p` then `q`
+        - `Pose.create_from_pq(p=p, q=q)` returns a new `Pose` object at that `p` and `q`. 
+### Instance methods (called with `<actor_instance>.<method_name>(<params>)`)
+- `get_state`:
+  - `self.<actor_instance>.get_state()[:, 7:10]`: contains linear velocity
+  - `self.<actor_instance>.get_state()[:, 10:13]`: contains angular velocity
+- `is_static(lin_thresh=1e-2, ang_thresh=1e-1)`: boolean check if actor is static based on velocity thresholds
+  - `lin_thresh`: linear velocity threshold
+  - `ang_thresh`: angular velocity threshold
+
+## Agent class
+`BaseAgent` class for the robot. The robot is a 7-DoF arm-and-two finger gripper. Degrees of freedom: arm position, arm orientation, and gripper open/close. 
+- Note that you will see `tcp` throughout the code, with its specific position being queried. `tcp` stands for Tool Center Point, the center between the two fingers. `tcp.pose` attributes tells you where the gripper is positioned.
+### Properties
+- `self.agent.controller`: currently activated controller
+- `self.agent.action_space`: position/orientation/state that controller has been sent to in the latest action, concatenated for the two controllers (arm and end-effector)
+### Methods
+- `self.agent.get_state()`: returns a dictionary with the following keys:
+  - "robot_root_pose": root pose
+  - "robot_root_vel": root velocity
+  - "robot_root_qvel": root angular velocity
+  - "robot_qpos": joint position
+  - "robot_qvel": joint velocity
+  - "controller": output of `controller.get_state()`, which contains target positions and orientations of the currently activated controller
+- `self.agent.is_grasping(object: Union[Actor, None] = None)`: boolean check if agent is grasping object  
+- `is_static(threshold: float)`: boolean check if robot is static (within given threshold) in terms of q velocity
+- `self.agent.robot.get_qlimits()[0, -1, 1] * 2`: gripper width, i.e. max possible opening
+
+## Other
+- `tcp` stands for "tool center point" - it is the point between the robot's grippers and is TODO whole robot
+- Like `reward` and the values of `info`, quantities are tensors over the batch. For example, `pose` is a tensor where the first dimension is the batch of multiple episodes, and the rest describe the pose of that episode. 
+- IMPORTANT: here, x is the front-and-back axis, y is the left-and-right axis, and z is the up-and-down axis. Typically, x and y are flipped - check your work!

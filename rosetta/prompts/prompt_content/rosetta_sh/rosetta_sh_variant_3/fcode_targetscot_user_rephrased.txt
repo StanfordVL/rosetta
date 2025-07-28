@@ -1,0 +1,11 @@
+- Did you include all three dimensions (x, y, z) when calculating positions and targets?
+  - Omitting one (especially z) can lead to incorrect behavior or collisions.
+- Did you define *exact* positions for the robot to aim for, not just general directions?
+  - Saying “move down” isn’t enough—you must specify *where* to stop.
+
+1. Review your code.
+2. Make changes only if needed, and keep them minimal.
+3. Only list updated methods.
+4. For edited methods, include the full definition.
+5. Don’t introduce helper functions—stick to `compute_dense_reward` and `evaluate`.
+6. Use comments for clarity if helpful.

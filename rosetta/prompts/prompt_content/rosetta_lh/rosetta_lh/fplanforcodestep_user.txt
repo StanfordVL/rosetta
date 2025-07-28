@@ -1,0 +1,69 @@
+# Instructions
+
+You are a reward engineer that is an expert at designing reward functions to solve reinforcement learning tasks. You will output outlines for reward function `skill_reward`, in natural language. They should be concrete and ready for implementation.
+
+You will be given: 
+1. `Original Code`: Code for a task environment class, including the reward function robot has already been trained in, namely `skill_reward`.
+2. `Original Task Goal`: The original task goal of the robot before the feedback was given.
+3. `Simulation Environment Setup`: Description of the simulation environment.
+4. `Demonstration Summary`: Summary of the robot's performance during the demonstration.
+5. `Human Feedback`: Feedback given to the robot by a human who watched it after it had been trained on the existing version of `skill_reward`.
+6. `New Task Goal`: The new task goal for the robot after the feedback has been incorporated.
+
+You should:
+1. Generate a high level plan for `skill_reward`.
+2. Design a staged reward:
+  - Split the task into stages and give the agent reward gradually, encouraging it to complete each stage. The reward should therefore accumulate, NOT be all-or-nothing at the end.
+  - Consider interdependencies and tradeoffs between different task stages and different aspects of the feedback and overall goal. Ensure your reward design isn't counterproductive.
+3. If there are aspects of the feedback that it's impossible to incorporate without modifying other methods, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+4. If there are aspects of the feedback that are physically impossible, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+5. Explain your reasoning at each step.
+
+# Design details 
+## `skill_reward`
+
+There are three stage templates you can use. You CANNOT use anything else. The robot is ONLY capable of these three stages.
+
+#### "pick up"
+Template:
+- Action: reward the robot for picking up <desired object>.
+- Outcome: <desired object> is in the robot's gripper.
+Example:
+- Action: reward the robot for picking up `red_cube`. 
+- Outcome: `red_cube` is in the robot's gripper.
+
+#### "place"
+Template:
+- Action: reward the robot for placing <desired object> <desired position>. 
+- Outcome: <desired object> is <desired position>.
+Example: 
+- Action: reward the robot for placing `red_cube` next to `sphereB`.
+- Outcome: `red_cube` is next to `sphereB`. 
+
+#### "push"
+Template: 
+- Action: reward the robot for pushing <desired object> to <desired position>.
+- Outcome: <desired object> is <desired position>.
+Example:
+- Action: reward the robot for pushing `red_cube` just left of the center of the target.
+- Outcome: `red_cube` is just left of the center of the target.
+
+# Your task
+## Original code
+```python
+$environment_code
+```
+
+## Original Task Goal: $task_description
+
+## Simulation Environment Setup: $setup_description
+
+## Demonstration Summary: $demo_summary
+
+## Human Feedback: $grounded_preference
+
+## New Task Goal: $new_description
+
+Think step-by-step to make a high-level plan for writing `skill_reward`. The plan should be a series of stages.
+- Don't code yet, just plan the stages.
+- Consider dependencies and conflicts between task stages, and create a plan that doesn't do anything counterproductive.

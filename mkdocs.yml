@@ -1,0 +1,27 @@
+site_name: ROSETTA 
+site_description: ROSETTA is a framework that leverages foundation models to interpret natural language preferences, creating multi-stage reward functions that can be implemented through automated code generation.
+site_author: Sanjana Srivastava, Kangrui Wang, Yung-Chieh Chan
+
+# Material theme settings
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+
+# Copyright footer
+copyright: Copyright © 2025, Stanford SVL
+
+# Additional settings
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences

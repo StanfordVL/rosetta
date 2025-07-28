@@ -1,0 +1,17 @@
+{
+    "video_name": "ashley-PlaceSphere2BinWide-b44eadad34",
+    "feedback": "Can the robot move it to the second tray?",
+    "description": "Robot is lifting ball into tray.",
+    "annotator_id": "ashley",
+    "env_id": "PlaceSphere2BinWide",
+    "prev_uid": "b44eadad34",
+    "uid_feedback": "f4d381cd034a0b90",
+    "uid_reward": "4ebb1fc87b6b0ebf",
+    "stages": null,
+    "round_hash": "9cc48adeaaaa9283",
+    "backup_folder": "/vision/u/sanjana2/feedback-to-reward-prompts/reward_outputs/ashley-PlaceSphere2BinWide-b44eadad34-f4d381cd034a0b90_gen16",
+    "reward_indxs": [
+        0,
+        1
+    ]
+}

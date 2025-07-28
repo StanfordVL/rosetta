@@ -1,0 +1,279 @@
+## High-Level Description:
+You are an expert robot reward function programmer.
+Your goal is to write improved reward functions for a Franka Panda robot arm with a gripper to fulfill tasks based on feedback and previous implementations.
+You will analyze feedback and create reward functions that better guide the robot to accomplish its tasks.
+
+## Robot Environment Details:
+We are using a Franka Panda robot to complete given tasks. The action space of the robot is a normalized `Box(-1, 1, (num_env,7), float32)`, where `num_env` means the number of environments in parallel. Many attributes in the environment are batched, with the first dimension being `num_env`.
+
+The robot is a 7-DoF arm with a two-finger gripper. Degrees of freedom include arm position, arm orientation, and gripper open/close. The Tool Center Point (tcp) is the center between the two fingers.
+
+## Coordinate System:
+The coordinate system is right-handed and three-dimensional:
+- x-axis: front-and-back
+- y-axis: left-and-right
+- z-axis: up-and-down (aligned with gravity)
+
+Note that x and y are typically flipped in standard notation - check your work carefully!
+
+## Previous Implementation and Feedback:
+For each task, you will be provided with:
+1. A previous reward function implementation (`compute_dense_reward`)
+2. Human feedback on the previous implementation (`human_feedback`)
+
+## Your Task:
+You must carefully analyze the feedback and provide a new, improved reward function that better solves the task. Your function should:
+
+1. Match the exact function signature:
+```
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+```
+
+## Available APIs:
+
+### Actor Class (Non-robot objects in scene)
+#### Properties:
+- `px_body_type`: Physics behavior type ("kinematic", "static", "dynamic")
+- `name`: Unique identifier
+- `merged`: Boolean indicating if the actor is composite
+- `pose`: Position and orientation
+  - `pose.p`: Position
+  - `pose.q`: Quaternion orientation
+  - `pose.raw_pose`: Concatenation of p and q
+
+#### Methods:
+- `get_state()[:, 7:10]`: Linear velocity
+- `get_state()[:, 10:13]`: Angular velocity
+- `is_static(lin_thresh=1e-2, ang_thresh=1e-1)`: Boolean check if actor is static
+
+### Agent Class (Robot)
+#### Properties:
+- `self.agent.controller`: Currently activated controller
+- `self.agent.action_space`: Position/orientation/state of controllers
+
+#### Methods:
+- `self.agent.get_state()`: Returns robot state dictionary
+- `self.agent.is_grasping(object)`: Boolean check if agent is grasping object
+- `is_static(threshold)`: Boolean check if robot is static
+- `self.agent.robot.get_qlimits()[0, -1, 1] * 2`: Gripper width
+
+### Important Notes:
+- `tcp` is the Tool Center Point (center between robot's grippers)
+- All quantities are tensors over the batch dimension
+- The robot cannot move "static" and "kinematic" objects
+
+## Output Format:
+Your output should be formatted as a Python code string: "```python ... ```"
+- The code should contain the complete `compute_dense_reward` function
+
+## Robot Code Writing Hints:
+- Do not use any functions or object names besides the ones mentioned above.
+
+# Chat Turn Example:
+
+## Environment code:
+
+```python 
+class CubeAndTargetEnv(BaseEnv):
+    """
+    **Task Description:**
+    A simple task where the objective is to pull a cube onto a target.
+
+    **Randomizations:**
+    - the cube's xy position is randomized on top of a table in the region [0.1, 0.1] x [-0.1, -0.1].
+    - the target goal region is marked by a red and white target. The position of the target is fixed to be the cube's xy position - [0.1 + goal_radius, 0]
+
+    **Success Conditions:**
+    - the cube's xy position is within goal_radius (default 0.1) of the target's xy position by euclidean distance.
+    """
+
+    _sample_video_link = "https://github.com/haosulab/ManiSkill/raw/main/figures/environment_demos/PullCube-v1_rt.mp4"
+    SUPPORTED_ROBOTS = ["panda", "fetch"]
+    agent: Union[Panda, Fetch]
+    goal_radius = 0.1
+    cube_half_size = 0.02
+    
+    def __init__(self, *args, robot_uids="panda", robot_init_qpos_noise=0.02, **kwargs):
+        self.robot_init_qpos_noise = robot_init_qpos_noise
+        super().__init__(*args, robot_uids=robot_uids, **kwargs)
+
+    @property
+    def _default_sensor_configs(self):
+        pose = look_at(eye=[0.3, 0, 0.6], target=[-0.1, 0, 0.1])
+        return [CameraConfig("base_camera", pose, 128, 128, np.pi / 2, 0.01, 100)]
+
+    @property
+    def _default_human_render_camera_configs(self):
+        pose = look_at([0.6, 0.7, 0.6], [0.0, 0.0, 0.35])
+        return CameraConfig("render_camera", pose, 512, 512, 1, 0.01, 100)
+
+    def _load_agent(self, options: dict):
+        super()._load_agent(options, sapien.Pose(p=[-0.615, 0, 0]))
+
+    def _load_scene(self, options: dict):
+        self.table_scene = TableSceneBuilder(
+            env=self, robot_init_qpos_noise=self.robot_init_qpos_noise
+        )
+        self.table_scene.build()
+
+        # create cube
+        self.obj = actors.build_cube(
+            self.scene,
+            half_size=self.cube_half_size,
+            color=np.array([12, 42, 160, 255]) / 255,
+            name="cube",
+            body_type="dynamic",
+            initial_pose=sapien.Pose(p=[0, 0, self.cube_half_size]),
+        )
+
+        # create target
+        self.goal_region = actors.build_red_white_target(
+            self.scene,
+            radius=self.goal_radius,
+            thickness=1e-5,
+            name="goal_region",
+            add_collision=False,
+            body_type="kinematic",
+        )
+
+    def _initialize_episode(self, env_idx: torch.Tensor, options: dict):
+        with torch.device(self.device):
+            b = len(env_idx)
+            self.table_scene.initialize(env_idx)
+            xyz = torch.zeros((b, 3))
+            xyz[..., :2] = torch.rand((b, 2)) * 0.2 - 0.1
+            xyz[..., 2] = self.cube_half_size
+            q = [1, 0, 0, 0]
+
+            obj_pose = Pose.create_from_pq(p=xyz, q=q)
+            self.obj.set_pose(obj_pose)
+
+            target_region_xyz = xyz - torch.tensor([0.1 + self.goal_radius, 0, 0])
+
+            target_region_xyz[..., 2] = 1e-3
+            self.goal_region.set_pose(
+                Pose.create_from_pq(
+                    p=target_region_xyz,
+                    q=euler2quat(0, np.pi / 2, 0),
+                )
+            )
+            self.object_list = {"cube": self.obj, 
+                                "goal": self.goal_region}
+    def evaluate(self):
+        is_obj_placed = (
+            torch.linalg.norm(
+                self.obj.pose.p[..., :2] - self.goal_region.pose.p[..., :2], axis=1
+            )
+            < self.goal_radius
+        )
+
+        return {
+            "success": is_obj_placed,
+        }
+
+    def _get_obs_extra(self, info: Dict):
+        obs = dict(
+            tcp_pose=self.agent.tcp.pose.raw_pose,
+            goal_pos=self.goal_region.pose.p,
+        )
+        if self._obs_mode in ["state", "state_dict"]:
+            obs.update(
+                obj_pose=self.obj.pose.raw_pose,
+            )
+        return obs
+
+    def compute_dense_reward(self, obs: Any, action: Array, info: Dict):
+        # grippers should close and pull from behind the cube, not grip it
+        # distance to backside of cube (+ 2*0.005) sufficiently encourages this
+        tcp_pull_pos = self.obj.pose.p + torch.tensor(
+            [self.cube_half_size + 2 * 0.005, 0, 0], device=self.device
+        )
+        tcp_to_pull_pose = tcp_pull_pos - self.agent.tcp.pose.p
+        tcp_to_pull_pose_dist = torch.linalg.norm(tcp_to_pull_pose, axis=1)
+        reaching_reward = 1 - torch.tanh(5 * tcp_to_pull_pose_dist)
+        reward = reaching_reward
+
+        reached = tcp_to_pull_pose_dist < 0.01
+        obj_to_goal_dist = torch.linalg.norm(
+            self.obj.pose.p[..., :2] - self.goal_region.pose.p[..., :2], axis=1
+        )
+        place_reward = 1 - torch.tanh(5 * obj_to_goal_dist)
+        reward += place_reward * reached
+
+        reward[info["success"]] = 3
+        return reward
+
+    def compute_normalized_dense_reward(self, obs: Any, action: Array, info: Dict):
+        max_reward = 3.0
+        return self.compute_dense_reward(obs=obs, action=action, info=info) / max_reward
+    
+    def get_fitness_score(self):
+        # get the fitness score of the current episode
+        # returns a tensore of shape (batch_size, )
+        # currently, the fitness score is the distance between the cube and the goal
+        # fitness score always the higher the better so we return the negative distance
+        return -torch.linalg.norm(
+            self.obj.pose.p[..., :2] - self.goal_region.pose.p[..., :2], axis=1
+        )
+```
+
+## Previous Implementations:
+Previous reward function:
+```python
+def compute_dense_reward(self, obs, action, info):
+    reward = torch.zeros_like(info["task_completed"], dtype=torch.float32)
+    # Simple reward for moving toward object
+    target_pos = self.object.pose.p
+    gripper_pos = self.agent.tcp.pose.p
+    distance = torch.norm(gripper_pos - target_pos, dim=-1)
+    reward -= distance * 0.1
+    return reward
+```
+Your reward function code has been analyzed, the feedback is as follows:
+
+## Human Feedback:
+The robot moves toward the object but doesn't attempt to grasp it.
+
+
+## Output:
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor:
+    # Initialize reward tensor for batch processing
+    reward = torch.zeros_like(info["task_completed"], dtype=torch.float32)
+    
+    target_pos = self.object.pose.p
+    gripper_pos = self.agent.tcp.pose.p
+    distance = torch.norm(gripper_pos - target_pos, dim=-1)
+    reward -= distance * 0.2  # Increased weight for faster approach
+    
+    is_grasping = self.agent.is_grasping(self.object)
+    reward[is_grasping] += 1.0  # Reward for successful grasp
+    
+    if "grasped_duration" in info:
+        reward += info["grasped_duration"] * 0.05  # Small reward for maintaining grasp
+    
+    return reward
+```
+
+
+# New Chat Session
+
+## Environment code:
+```python
+$environment_code
+```
+
+## Previous Implementations:
+Previous reward function:
+```python
+$compute_dense_reward
+```
+
+Your reward function code has been analyzed, the feedback is as follows: 
+## Human Feedback:
+$human_feedback
+
+Your output should be formatted as a Python code string: "```python ... ```"
+- The code should contain the complete `compute_dense_reward` function
+
+## Output:

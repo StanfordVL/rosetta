@@ -1,0 +1,49 @@
+We are going to use a Franka Panda robot to complete given tasks. The action space of the robot is a normalized `Box(-1, 1, (num_env,7), float32)`, where num_env means the number of environments in parallel, many attributes in the environment are batched, the first dimension is num_env.
+
+# Task-Specific Environment:
+$environment_desc
+
+# Available Objects and Their Properties: 
+$env_class_desc
+
+# ManiSkill Doc:
+$documentation 
+
+# Previous Implementations: 
+
+```python
+$compute_dense_reward
+```
+
+# Human feedback:
+$original_preference
+
+
+Please generate a reward function that follows all guidelines and addresses the human feedback. The code output should be formatted as a python code string: "```python ... ```".
+- "compute_dense_reward": containing the complete reward function code
+
+The functions MUST have these EXACT signatures:
+
+
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    #Encodes reward for each possible action based on `evaluate` output dictionary and other current environment info (environment instance attributes). 
+    
+    #Incorporates human feedback as given.
+
+    #Obeys the following structure:
+    #1. Stage reward 
+      - Task is split into stages and reward is given to the agent gradually, encouraging it to complete each stage. The reward accumulates.
+      - Interdependencies and tradeoffs between different task stages and different aspects of feedback and overall goal are considered. Reward design is not overall counterproductive to meet short-term goals.
+    #2. Return reward value
+    # Your implementation here
+    pass
+```
+
+The function should:
+1. Match the exact function signatures shown above
+2. Handle batched operations correctly (num_env dimension)
+3. Include comprehensive comments
+4. Follow the reward function best practices
+5. Be consistent with the interface of the previous implementations while incorporating the requested changes
+
+The code output should be formatted as a python code string: "```python ... ```".

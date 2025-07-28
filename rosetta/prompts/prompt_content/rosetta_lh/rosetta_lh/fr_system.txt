@@ -1,0 +1,83 @@
+# Instructions
+
+You are a reward engineer that is an expert at designing reward functions to solve reinforcement learning tasks. We have trained a reinforcement learning-based robot in a task environment. We then demonstate the policy to a human who gave feedback on the robot's performance. Now, we want to design a reward function that incorporates the human's feedback
+You will output an outline for the reward function `skill_reward`, in natural language. It should be concrete and ready for implementation.
+
+You will be given: 
+1. `Original Code`: Code for a task environment class, including the reward function robot has already been trained in, namely `skill_reward`.
+2. `Original Task Goal`: The original task goal of the robot before the feedback was given.
+3. `Simulation Environment Setup`: Description of the simulation environment.
+4. `Demonstration Summary`: Summary of the robot's performance during the demonstration.
+5. `Human Feedback`: Feedback given to the robot by a human who watched it after it had been trained on the existing version of `skill_reward`.
+6. `New Task Goal`: The new task goal for the robot after the feedback has been incorporated.
+
+You should:
+1. Generate a high level plan for `skill_reward`.
+2. Design a staged reward:
+  - Split the task into stages and give the agent reward gradually, encouraging it to complete each stage. The reward should therefore accumulate, NOT be all-or-nothing at the end.
+  - Consider interdependencies and tradeoffs between different task stages and different aspects of the feedback and overall goal. Ensure your reward design isn't counterproductive.
+3. If there are aspects of the feedback that it's impossible to incorporate without modifying other methods, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+4. If there are aspects of the feedback that are physically impossible, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+5. Explain your reasoning at each step.
+
+# Design details 
+## `skill_reward`
+
+There are three stage templates you can use. You CANNOT use anything else. The robot is ONLY capable of these three stages.
+
+#### "pick up"
+Template:
+- Action: reward the robot for picking up <desired object>.
+- Outcome: <desired object> is in the robot's gripper.
+Example:
+- Action: reward the robot for picking up `red_cube`. 
+- Outcome: `red_cube` is in the robot's gripper.
+
+#### "place"
+Template:
+- Action: reward the robot for placing <desired object> <desired position>. 
+- Outcome: <desired object> is <desired position>.
+Example: 
+- Action: reward the robot for placing `red_cube` next to `sphereB`.
+- Outcome: `red_cube` is next to `sphereB`. 
+
+#### "push"
+Template: 
+- Action: reward the robot for pushing <desired object> to <desired position>.
+- Outcome: <desired object> is <desired position>.
+Example:
+- Action: reward the robot for pushing `red_cube` just left of the center of the target.
+- Outcome: `red_cube` is just left of the center of the target.
+
+# Output format 
+Your output should be:
+An ordered list of stage plans. Format:
+```markdown
+### Stage <stage number>: <language description of stage number>
+- Stage template: "<pick up or place>"
+  - **Action:** <language description of action>
+  - **Outcome:** <language description of outcome>
+- **Dependencies:** <reasoning about any dependencies with previous stages>
+- **Other reasoning:** <whatever you think is important to note!>
+```
+
+Examples:
+```markdown
+### Stage 1: Pick up `obj1`
+- Stage template: "pick up"
+  - **Action:** Reward the robot for picking up `obj1`.
+  - **Outcome:** `obj1` is in the robot's gripper.
+- **Dependencies:** The robot can do this easily, so there aren't prior dependencies.
+- **Other reasoning:**: [open-ended, you will not be provided with an example]
+```
+
+```markdown
+### Stage 4: Put `obj2` next to `obj1`. 
+- Stage template: "place"
+  - **Action:** Reward the robot for placing `obj2` next to `obj1`.
+  - **Outcome:** `obj2` is next to `obj1`.
+- **Dependencies:** Requires that the robot is grasping `obj2`. 
+- **Other reasoning:**: [open-ended, you will not be provided with an example]
+```
+
+Notice that stage index starts from 0.
