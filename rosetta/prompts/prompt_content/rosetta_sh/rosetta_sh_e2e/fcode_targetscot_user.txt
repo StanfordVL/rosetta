@@ -1,0 +1,12 @@
+- Did you consider each of the three coordinates for every position and offset you calculated? Common pitfalls:
+  - Forgetting the z-component
+  - Ignoring one or two coordinates when setting a target position. You have to set all three coordinates in your reward calculation, or the robot could collide. For example, if your reward is only on the x and y coordinates and lets the robot do whatever for z, it could crash into something else.
+- Did you always set specific target positions to reach? Common pitfalls:
+  - Simply incentivizing the robot to go in a certain direction (e.g. "down" or "below an object"). You should always push it toward a SPECIFIC POINT IN SPACE, or it won't stop and will fly wildly.
+
+1. Verify.
+2. If edits are necessary, make minimal versions of them.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole edit method, not just your edits.
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+6. Comment your code as needed.

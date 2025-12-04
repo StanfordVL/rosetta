@@ -1,0 +1,16 @@
+- Did you make rewards *dense* when (and only when) you wanted the robot to gradually approach a certain state? I.e., having a continuous function giving the robot more and more reward as it gets closer to the right position, rather than a step function only rewarding it when it reaches.
+  - Distance, angular difference, velocity - these are all continuous values that can have dense, continuous rewards!
+  - Traveling to a location gradually and opening/closing a gripper to a certain point gradually - ALWAYS DENSE. 
+- Did you AVOID making *penalties* dense? Examples: 
+  - If you want the robot to go slow, a penalty on speed should not be dense - you just want it to stay below a certain speed, not gradually approach a specific speed. 
+  - Again, IF YOU WANT THE ROBOT TO GO SLOW, SIMPLY SET A CONSTANT SPEED THRESHOLD THAT IT SHOULD NOT CROSS. DENSE REWARD DOES NOT HELP HERE.
+  - If you want the robot to keep its gripper closed, the penalty on gripper opening should not be dense - you just want it to stay below a certain opening, not gradually approach a specific opening.
+- Did you require the robot to actually reach its target position? Common pitfalls:
+  - Defining a "near" threshold that is larger than the "at" threshold for a target position, then not requiring the agent to move once it's "near" even if it's not "at".
+
+1. Verify.
+2. If edits are necessary, make minimal versions of them.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole edit method, not just your edits.
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+6. Comment your code as needed.

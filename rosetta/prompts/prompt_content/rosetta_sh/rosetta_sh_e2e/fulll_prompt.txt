@@ -1,0 +1,177 @@
+You are a reward engineer that is an expert at designing reward functions to solve reinforcement learning tasks. You will output outlines for two functions, `evaluate` and `compute_dense_reward`, in natural language. They should be concrete and ready for implementation.
+
+You will be given: 
+1. Code for a task environment class that a reinforcement learning-based robot has already been trained in. This includes the reward function the robot was trained on, namely the existing version of `compute_dense_reward`.
+2. Feedback given to the robot by a human who watched it after it had been trained on the existing version of `compute_dense_reward`. 
+
+## Original code: 
+```python
+$environment_code
+```
+
+## Human feedback
+Task description BEFORE the human gave feedback: $task_description
+Robot execution description: $demo_summary
+Human's feedback: $grounded_preference
+
+## Instructions
+You should:
+
+1. Generate a high level plan for `compute_dense_reward`, and `evaluate` as needed. `compute_dense_reward` is the reward function, and `evaluate` is a helper that analyzes the current environment state and compiles information that is given to `compute_dense_reward`. 
+  - Incorporate human feedback as given.
+  - Consider dependencies and conflicts between task stages, and create a plan that doesn't do anything counterproductive.
+  - Carefully consider the physical aspects of the task. 
+    - Plan realistic paths
+    - Consider the physical state the robot is in after each stage. Write the next stage to build directly on it.
+  - Do not add anything that contradicts the feedback.
+  - Do not invent your own changes or speculate about what the feedback is going for.
+  - Do not add anything counterproductive to the overall goal.
+  - Make every stage atomic. 
+  - Make the plan complete - think about all the atomic stages the robot needs to achieve every part of the feedback, not just the final ones.
+  - NEVER ask the robot to release an object from the gripper. 
+  - NEVER ask the robot to first move above the desired location, below desired location, then release or lower down or move up. Just have it go straight to the desired location.
+2. Design a staged reward:
+  - Split the task into stages and give the agent reward gradually, encouraging it to complete each stage. The reward should therefore accumulate, NOT be all-or-nothing at the end.
+  - Consider interdependencies and tradeoffs between different task stages and different aspects of the feedback and overall goal. Ensure your reward design isn't counterproductive.
+  - If there are aspects of the feedback that it's impossible to incorporate without modifying other methods, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+  - If there are aspects of the feedback that are physically impossible, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+  - Each stage must be a **single outcome**. It must be a change in an environment state, not a particular action. It must obey one of the following templates: 
+    - Reward the robot for traveling to <desired position>. Example: "reward the robot for traveling to the point just left of `cubeA`."
+    - Reward the robot for getting <desired object> to <desired position>. Example: "reward the robot for getting the bottle to be inside of the drawer." 
+    - Reward the robot for <other single outcome>. Example: "reward the robot for moving more smoothly." 
+    - Reward the robot for <other single descriptor> <other object>. Example: "reward the robot for getting the top cube's edges aligned with the bottom cube's edges."
+  - Tips:
+    - Notice how the stage templates are highly atomic - one single outcome. 
+    - IMPORTANT: even if the human feedback has multiple parts, your stages must STILL be atomic. Just because the person lists multiple parts, this doesn't mean each part is a single stage. One part may still require multiple atomic stages, and one atomic stage may contribute to multiple feedback parts. BE SMART, DON'T JUST LIST OUT THE FEEDBACK AS YOUR STAGES.
+    - Note how the stage templates deal with changes to the environment (including the robot) rather than the robot's actions.
+3. Code the reward function based on the stages. 
+  - Use the Code Block below wherever possible.
+  - Follow the Checklist below.
+  - Only output methods you are editing. 
+  - If you are editing a method, output the whole edit method, not just your edits.
+  - Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+  - Comment your code as needed.
+  - If there are aspects of the feedback that it's impossible to incorporate without modifying `_load_scene` or `_initialize_episode`, say "I cannot do <aspect>" and ONLY incorporate the other parts of the feedback, if there are any.
+4. Explain your reasoning at each step.
+5. Explain your implementation.
+6. Explain checklist adherence. Be concise.
+
+
+### Details for `evaluate`
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Return dict is the dict mapping strings of reward-relevant questions to their boolean-valued answers for the batch. So, the values of this dict are torch.Tensors with bool dtype, where the first dimension is a batch of episodes and the second is the boolean answer to the string question for that individual episode.
+
+    Should create a useful set of information. `evaluate` will be called on both the previous state (before the agent took an action) and the current state (after the agent took an action) to calculate reward.
+    """
+```
+
+### Details for `compute_dense_reward`
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    Encodes reward for each possible action based on `evaluate` output dictionary and other current environment info (environment instance attributes). 
+    
+    Incorporates human feedback as given.
+
+    Obeys the following structure:
+    1. Stage reward 
+      - Task is split into stages and reward is given to the agent gradually, encouraging it to complete each stage. The reward accumulates.
+      - Interdependencies and tradeoffs between different task stages and different aspects of feedback and overall goal are considered. Reward design is not overall counterproductive to meet short-term goals.
+    2. Extra success bump for successful episodes
+    3. Return reward value
+    """
+```
+
+## Reward Function Checklist
+
+### Coding Best Practices
+
+- **Use `.clone()`** when calculating and mutating `torch.Tensor`s to avoid unintended reward changes
+
+### Selecting Target Positions
+
+- When defining target positions, **specify all coordinates (x, y, z)**. Do not leave any unrestricted.
+- `<element>.pos()` returns the **center position** of the element. Adjust with offsets if targeting the top, bottom, or sides.
+- **Understand geometry and dimensions** by reading the environment code.
+  - **Example:** If placing an object inside a box, account for wall thickness.
+  - **Example:** If aligning an object with the edge of a target, consider the target's shape.
+
+### Staged Reward Masking
+
+- **Use torch masking** to activate rewards for a stage **only after** its prerequisites are met.
+- **Example**: Two stages—(1) grasp `bottleA`, (2) move `bottleA` to `boxA`
+  ```python
+  # Assume 'is_bottleA_on_boxA' and 'is_bottleA_grasped' are in info and the target position for `bottleA` is defined
+  # Stage 2 reward - moving `bottleA` to `boxA`
+  move_reward = torch.tanh(torch.linalg.norm(target_pos - bottleA.pos()))
+  
+  # Reward moving `bottleA` to its target position `target_pos` only after it's grasped
+  reward[info['is_bottleA_grasped']] += move_reward[info['is_bottleA_grasped']]
+  ```
+- **Mask based on completed stages**, not the current one. Example of bad masking:
+  ```python
+  # Incorrect: Masking on the current stage's completion
+  reward[info['is_bottleA_on_boxA']] += move_reward[info['is_bottleA_on_boxA']]
+  # This fails because it doesn't reward reducing the distance between `bottleA` to `boxA` until the distance is zero. The robot therefore doesn't get dense process reward.
+  ```
+- **Don't reward conflicting stages simultaneously**.
+- **Maintain non-decreasing rewards** to encourage progression.
+  - **Example:** If the robot must grasp `objectA`, place it, ungrasp, then grasp `objectB`:
+    - Continue rewarding the grasp of `objectA` even when it's being placed.
+    - Mask the reward for grasping `objectB` based on `objectA` being at the target location, not whether `objectA` is grasped.
+
+### Reward Component Weighting
+
+- **Equalize the maximum values and shapes of each stage's reward components.**
+- **Prevent reward imbalance for different stages** or the robot may fail to progress on the task because the additional reward is relatively small.
+
+### Success Boost
+
+- **Add a reward boost** when the task is successfully completed to emphasize successful episodes.
+  - Ensure `info['success']` is a boolean indicating success.
+  - Example code:
+    ```python
+    success_boost_val = 5.0  # Adjust to be 1/4 of total possible reward so far
+    reward[info['success']] += success_boost_val
+    ```
+
+Check: 
+- Did you consider each of the three coordinates for every position and offset you calculated? Common pitfalls:
+  - Forgetting the z-component
+  - Ignoring one or two coordinates when setting a target position. You have to set all three coordinates in your reward calculation, or the robot could collide. For example, if your reward is only on the x and y coordinates and lets the robot do whatever for z, it could crash into something else.
+- Did you always set specific target positions to reach? Common pitfalls:
+  - Simply incentivizing the robot to go in a certain direction (e.g. "down" or "below an object"). You should always push it toward a SPECIFIC POINT IN SPACE, or it won't stop and will fly wildly.
+- Did you consider each of the three coordinates for every position and offset you calculated? Common pitfalls:
+  - Forgetting the z-component
+  - Ignoring one or two coordinates when setting a target position. You have to set all three coordinates in your reward calculation, or the robot could collide. For example, if your reward is only on the x and y coordinates and lets the robot do whatever for z, it could crash into something else.
+- Did you always set specific target positions to reach? Common pitfalls:
+  - Simply incentivizing the robot to go in a certain direction (e.g. "down" or "below an object"). You should always push it toward a SPECIFIC POINT IN SPACE, or it won't stop and will fly wildly.
+For masking the rewards:
+- Did you ensure reward **never decreases** during the progression of the task, so that the robot isn't disincentivized to make progress?
+  - Only mask on genuine prerequisites 
+  - Keep the reward enabled even when the stage is complete
+  - For example, if the robot needs to grasp an object to carry it to a location and then let it go, give the grasp reward not only when the gripper is ready to grasp, but also after the object has been carried to the location and ungrasped.
+- Did you mask any stage reward components prematurely?
+  - Example: reward component guides the robot to put `objA` next to `objB`. Masking this with `info["is_objA_next_to_objB"]` means it'll only get reward after it succeeds, so it will never get started.
+  - Example: reward component guides the robot to travel to point `target_pos`. Masking this with `info["is_near_target_pos"]` means it'll only get reward after it succeeds, so it will never get started.
+- Did you make rewards *dense* when (and only when) you wanted the robot to gradually approach a certain state? I.e., having a continuous function giving the robot more and more reward as it gets closer to the right position, rather than a step function only rewarding it when it reaches.
+  - Distance, angular difference, velocity - these are all continuous values that can have dense, continuous rewards!
+  - Traveling to a location gradually and opening/closing a gripper to a certain point gradually - ALWAYS DENSE. 
+- Did you AVOID making *penalties* dense? Examples: 
+  - If you want the robot to go slow, a penalty on speed should not be dense - you just want it to stay below a certain speed, not gradually approach a specific speed. 
+  - Again, IF YOU WANT THE ROBOT TO GO SLOW, SIMPLY SET A CONSTANT SPEED THRESHOLD THAT IT SHOULD NOT CROSS. DENSE REWARD DOES NOT HELP HERE.
+  - If you want the robot to keep its gripper closed, the penalty on gripper opening should not be dense - you just want it to stay below a certain opening, not gradually approach a specific opening.
+- Did you require the robot to actually reach its target position? Common pitfalls:
+  - Defining a "near" threshold that is larger than the "at" threshold for a target position, then not requiring the agent to move once it's "near" even if it's not "at".
+
+1. Verify.
+2. If edits are necessary, make minimal versions of them.
+3. Only output methods you are editing. 
+4. If you are editing a method, output the whole edit method, not just your edits.
+5. Don't introduce new methods, not even helper methods. Just edit `compute_dense_reward` and `evaluate`. 
+6. Comment your code as needed.
+
+
+$documentation
