@@ -1,7 +1,7 @@
 # Short horizon continuous control
 from .rosetta_sh.rosetta_sh import rosetta_sh
 from .rosetta_sh.rosetta_sh_nohistory import rosetta_sh_nohistory
-
+from .rosetta_sh.rosetta_sh_e2e import rosetta_sh_e2e
 # Long horizon action primitive
 from .rosetta_lh.rosetta_lh import rosetta_lh
 

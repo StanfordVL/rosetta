@@ -122,6 +122,16 @@ if __name__ == "__main__":
         config.load_yaml_config()
         config.validate_paths()
         config.validate_config()
+        if not config.config_dirs_path.exists():
+            print("Config directories path does not exist, creating it...")
+            os.makedirs(config.config_dirs_path, exist_ok=True)
+        if not config.result_dirs_path.exists():
+            print("Result directories path does not exist, creating it...")
+            os.makedirs(config.result_dirs_path, exist_ok=True)
+        json_output_dir=os.path.dirname(config.jsonl_output_path)
+        if not os.path.exists(json_output_dir):
+            print("JSON output directory does not exist, creating it...")
+            os.makedirs(json_output_dir, exist_ok=True)
         print(config)
         run_experiment(config)
     except Exception as e:

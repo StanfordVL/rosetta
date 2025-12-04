@@ -1,0 +1,71 @@
+Excellent. Now, translate your plan into code.
+
+# Instructions
+
+1.  Implement the staged reward function you designed.
+    -   Leverage the provided Code Blocks and follow the Checklist below.
+2.  Only output the methods that you are changing (`compute_dense_reward` and `evaluate`).
+3.  When you edit a method, provide the entire new method, not just the lines you changed.
+4.  Do not introduce any new functions or helpers.
+5.  Comment your code clearly to explain the logic.
+6.  If any part of the feedback is impossible to implement without modifying locked parts of the code (`_load_scene` or `_initialize_episode`), explicitly state "I cannot do <aspect>" and implement only what is possible.
+7.  Briefly explain your final implementation.
+8.  Concisely confirm your adherence to each point on the checklist.
+
+# Code Snippet: Guiding an Object to a Target
+
+To create a dense reward for moving an object, use the following pattern in `compute_dense_reward`. This rewards the robot for reducing the distance to the target.
+
+```python
+# Reward for moving obj to target_pos. The reward is 1.0 at the target and decreases as distance grows.
+distance = torch.linalg.norm(target_pos - obj.pos())
+transport_reward = 1.0 - torch.tanh(distance)
+```
+**Important:** Don't just give a binary reward for reaching the target. The dense reward is crucial for guiding the robot's movement.
+
+# Function Signatures
+
+### `evaluate`
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Returns a dictionary mapping state descriptions (as strings) to boolean tensors,
+    indicating if those states are true for each episode in the batch.
+    It must include a "success" key for the overall task success condition.
+    This is called on the pre-action and post-action states.
+    """
+```
+
+### `compute_dense_reward`
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    Implements the staged reward logic based on the `evaluate` dictionary.
+    1.  **Staged Reward:** Reward is accumulated through stages. Rewards should be dense where appropriate.
+    2.  **Success Bonus:** A large bonus is added for episodes that achieve the final "success" condition.
+    3.  **Return:** Returns the final reward tensor.
+    """
+```
+
+# Reward Function Checklist
+
+### Code Quality
+-   **Safe Tensor Operations:** Use `.clone()` before modifying any reward tensors to prevent unintended side effects.
+
+### Target Positioning
+-   **3D Coordinates:** All target positions must be fully specified with x, y, and z coordinates.
+-   **Object Geometry:** Remember that `.pos()` returns an object's center. You must calculate and add appropriate offsets to target an object's surface, edge, or to account for factors like container wall thickness.
+
+### Staged Reward Logic
+-   **Masking:** Use boolean masks to enable a stage's reward only *after* its prerequisite stage is complete.
+-   **Correct Masking Condition:** The mask for Stage N should be `info['is_stage_N-1_complete']`, not `info['is_stage_N_complete']`.
+-   **No Conflicting Rewards:** Do not activate rewards for stages that are mutually exclusive at the same time.
+-   **Monotonic Reward:** Ensure the total reward does not decrease as the agent makes progress. Keep rewards for completed stages active.
+
+### Reward Scaling
+-   **Balanced Weights:** Ensure all reward components are scaled to have similar magnitudes. This prevents the robot from ignoring a stage because its reward is too small compared to others.
+
+### Final Success
+-   **Success Boost:** Add a significant reward bonus when `info['success']` is true. This should be a substantial portion of the total possible reward.
+
+$documentation

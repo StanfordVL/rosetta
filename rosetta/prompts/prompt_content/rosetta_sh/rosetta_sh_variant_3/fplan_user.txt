@@ -1,0 +1,28 @@
+## Original code:
+```python
+$environment_code
+```
+
+## Feedback Context
+Task before human review: $task_description  
+Robot's behavior summary: $demo_summary  
+User feedback: $grounded_preference
+
+## Task
+Create a step-by-step plan for rewriting `evaluate` and `compute_dense_reward`. Do not write code yet.
+
+### Instructions:
+- Break the task into clear stages, each representing a distinct environmental outcome.
+- Ensure each stage builds on a feasible robot state from the previous step.
+- Stay grounded in the robot's physical capabilities.
+- Do not include robot actions—describe outcomes (e.g., object moved, robot arrived).
+- Stages should reflect progress in the task, not final success only.
+
+### Rules:
+1. Integrate user feedback exactly—no assumptions or reinterpretations.
+2. Don’t contradict feedback.
+3. Don’t invent your own logic.
+4. Avoid counterproductive goals.
+5. Each stage = one environmental result.
+6. Include all required stages, starting from initial state.
+7. Do not include gripper release or staged movements like "move above then drop."

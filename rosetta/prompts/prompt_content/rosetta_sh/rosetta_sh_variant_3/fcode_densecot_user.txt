@@ -1,0 +1,15 @@
+- Did you apply *continuous rewards* specifically when you wanted the robot to gradually approach a target state?
+  - Metrics like distance, orientation difference, or velocity are perfect for smooth, continuous reward signals.
+  - For example, moving toward a goal location or incrementally adjusting a gripper’s position should always use dense reward feedback.
+- Did you avoid giving *dense penalties*?
+  - Penalizing velocity? Avoid making this gradual—just enforce a fixed threshold the robot shouldn't exceed.
+  - Same goes for gripper openness—use a hard cutoff if the goal is simply "keep it closed."
+- Did you enforce that the robot actually gets all the way to its intended target?
+  - Don't just reward "near enough." Ensure the goal condition requires true contact or alignment.
+
+1. Review your implementation.
+2. If updates are needed, make only the smallest changes required.
+3. List only the methods you modified.
+4. For any method you modify, include the full method definition.
+5. Do not create any new functions or helpers—just modify `compute_dense_reward` and `evaluate`.
+6. Use comments where useful.

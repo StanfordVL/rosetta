@@ -1,0 +1,15 @@
+For conditioning the rewards:
+- Did you guarantee reward **never diminishes** throughout the task progression, ensuring that the agent isn't discouraged from making advances?
+  - Only condition on actual prerequisites 
+  - Maintain the reward activation even when the phase is finished
+  - For instance, if the agent needs to grasp an item to transport it to a destination and then release it, provide the grasp reward not only when the gripper is prepared to grasp, but also after the item has been transported to the destination and released.
+- Did you condition any phase reward components too early?
+  - Example: reward component directs the agent to position `objA` adjacent to `objB`. Conditioning this with `info["is_objA_next_to_objB"]` means it'll only receive reward after succeeding, so it will never begin.
+  - Example: reward component directs the agent to navigate to point `target_pos`. Conditioning this with `info["is_near_target_pos"]` means it'll only receive reward after succeeding, so it will never begin.
+
+1. Verify.
+2. If modifications are required, create minimal versions of them.
+3. Only output methods you are modifying. 
+4. If you are modifying a method, output the complete modified method, not just your changes.
+5. Don't create new methods, not even utility methods. Just modify `compute_dense_reward` and `evaluate`. 
+6. Add comments to your code as appropriate.

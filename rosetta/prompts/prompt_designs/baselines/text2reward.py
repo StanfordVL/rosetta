@@ -42,7 +42,7 @@ def text2reward(
     default_save_msg_hist(user_code_msg, hist, hist_f)
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
 
-    asst_code_msg=query_until_complete(client, hist, "o1-mini", params)
+    asst_code_msg=query_until_complete(client, hist, "o4-mini", params)
     default_save_msg_hist(asst_code_msg, hist, hist_f)
     default_save_msg_hist(asst_code_msg, debug_hist, debug_f)
 

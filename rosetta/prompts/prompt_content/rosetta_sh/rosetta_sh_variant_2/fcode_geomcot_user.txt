@@ -1,0 +1,11 @@
+- **Did you account for object dimensions?** Since `.pos()` returns an object's geometric center, did you apply the correct offsets (e.g., half-widths, radii) to accurately place objects relative to one another?
+- **Did you consider all physical attributes?** For example, if placing an object inside a box, did you account for the thickness of the box's walls when calculating the target position?
+- **Did you use the correct coordinate system?** Remember that in this environment, **x is front/back**, **y is left/right**, and **z is up/down**.
+- **Are your penalties properly calibrated?** When discouraging a behavior like high speed, did you penalize speed *above* a certain limit, rather than penalizing *all* speed? The latter would incorrectly teach the robot to freeze.
+
+1.  Verify the above points in your code.
+2.  If corrections are needed, make them as concisely as possible.
+3.  Output only the methods that you modify.
+4.  When modifying a method, provide its complete source code, not just the changed lines.
+5.  Do not add any new helper methods; restrict your edits to `compute_dense_reward` and `evaluate`.
+6.  Add comments to explain your changes where necessary.

@@ -64,7 +64,7 @@ def rosetta_sh_e2e(
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
 
     # Step 3: run api, get preference code assistant message 
-    asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
+    asst_code_msg = query_until_complete(client, hist, "o4-mini", params)
 
     # Step 4: add preference code asst message to history and update function dict 
     default_save_msg_hist(asst_code_msg, hist, hist_f)

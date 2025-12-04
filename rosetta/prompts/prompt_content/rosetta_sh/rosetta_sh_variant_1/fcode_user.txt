@@ -1,0 +1,110 @@
+Perfect.
+
+# Instructions:
+1. Implement the reward function according to the phases. 
+  a. Utilize the Code Block below when applicable.
+  b. Adhere to the Checklist below.
+2. Only output methods you are modifying. 
+3. If you are modifying a method, output the complete modified method, not just your changes.
+4. Don't create new methods, not even utility methods. Just modify `compute_dense_reward` and `evaluate`. 
+5. Add comments to your code as appropriate.
+6. If there are elements of the feedback that cannot be implemented without modifying `_load_scene` or `_initialize_episode`, state "I cannot implement <element>" and ONLY implement the other parts of the feedback, if any exist.
+7. Describe your implementation.
+8. Describe checklist compliance. Be brief.
+
+# Code Blocks for `compute_dense_reward`
+
+### Guide Agent to Target Locations
+In `compute_dense_reward`: 
+- **Reduce the distance** between the entity's current position and the target location in the reward function.
+- **Normalize and smooth distances** using functions like `torch.tanh`:
+  ```python
+  navigation_reward = 1.0 - torch.tanh(torch.linalg.norm(target_location - entity.pos()))     # max 1.0, decreases with distance
+  ```
+- **Don't simply provide a bonus when the target location has been reached.** The agent will receive no guidance during movement and be unable to start.
+
+# Function signatures
+
+## Details for `evaluate`:
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Return dict maps strings of reward-relevant queries to their boolean-valued responses for the batch. Thus, the values of this dict are torch.Tensors with bool dtype, where the first dimension represents a batch of episodes and the second is the boolean response to the string query for that specific episode.
+
+    Should generate a useful collection of information. `evaluate` will be called on both the prior state (before the agent executed an action) and the current state (after the agent executed an action) to compute reward.
+
+    Always includes a key called "success" that maps to the success condition
+    """
+```
+
+## Details for `compute_dense_reward`:
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    Determines reward for each potential action based on `evaluate` output dictionary and other current environment information (environment instance attributes). 
+    
+    Implements human feedback as provided.
+
+    Follows the following structure:
+    1. Phase reward 
+      - Task is divided into phases and reward is provided to the agent incrementally, motivating it to complete each phase. The reward accumulates. Each phase's reward is continuous when feasible.
+      - Dependencies and trade-offs between different task phases and different elements of feedback and overall objective are considered. Reward design is not overall detrimental to achieve short-term objectives.
+    2. Additional success bonus for successful episodes
+    3. Return reward value
+    """
+```
+
+# Reward Function Checklist
+
+### Implementation Best Practices
+
+- **Use `.clone()`** when computing and modifying `torch.Tensor`s to prevent unintended reward modifications
+
+### Choosing Target Locations
+
+- When establishing target locations, **define all coordinates (x, y, z)**. Do not leave any unspecified.
+- `<element>.pos()` provides the **center position** of the element. Adjust with offsets if targeting the top, bottom, or sides.
+- **Comprehend geometry and dimensions** by examining the environment code.
+  - **Example:** If positioning an object within a container, account for wall thickness.
+  - **Example:** If aligning an object with the boundary of a target, consider the target's geometry.
+
+### Phased Reward Conditioning
+
+- **Use torch conditioning** to enable rewards for a phase **only after** its prerequisites are satisfied.
+- **Example**: Two phases—(1) grasp `bottleA`, (2) transport `bottleA` to `boxA`
+  ```python
+  # Assume 'is_bottleA_on_boxA' and 'is_bottleA_grasped' are in info and the target location for `bottleA` is established
+  # Phase 2 reward - transporting `bottleA` to `boxA`
+  transport_reward = torch.tanh(torch.linalg.norm(target_location - bottleA.pos()))
+  
+  # Reward transporting `bottleA` to its target location `target_location` only after it's grasped
+  reward[info['is_bottleA_grasped']] += transport_reward[info['is_bottleA_grasped']]
+  ```
+- **Condition based on finished phases**, not the current one. Example of incorrect conditioning:
+  ```python
+  # Incorrect: Conditioning on the current phase's completion
+  reward[info['is_bottleA_on_boxA']] += transport_reward[info['is_bottleA_on_boxA']]
+  # This fails because it doesn't reward decreasing the distance between `bottleA` to `boxA` until the distance is zero. The agent therefore doesn't receive continuous process reward.
+  ```
+- **Don't reward contradictory phases simultaneously**.
+- **Ensure non-decreasing rewards** to promote progression.
+  - **Example:** If the agent must grasp `objectA`, position it, release, then grasp `objectB`:
+    - Continue rewarding the grasp of `objectA` even when it's being positioned.
+    - Condition the reward for grasping `objectB` based on `objectA` being at the target location, not whether `objectA` is grasped.
+
+### Reward Component Balancing
+
+- **Balance the maximum values and shapes of each phase's reward components.**
+- **Avoid reward imbalance for different phases** or the agent may fail to advance on the task because the additional reward is relatively minor.
+
+### Success Bonus
+
+- **Include a reward bonus** when the task is successfully completed to highlight successful episodes.
+  - Ensure `info['success']` is a boolean indicating success.
+  - Example code:
+    ```python
+    success_bonus_val = 5.0  # Adjust to be 1/4 of total possible reward so far
+    reward[info['success']] += success_bonus_val
+    ```
+
+$documentation

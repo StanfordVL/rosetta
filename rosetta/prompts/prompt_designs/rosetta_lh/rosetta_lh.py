@@ -80,8 +80,8 @@ def rosetta_lh(
     # Step 4: get target action list from preference plan assistant message
     target_actions = extract_target_actions(asst_plan_msg)
 
-    # Phase 2: o1-mini code draft
-    # Step 5: make alternative user stage reward message to give to o1-mini
+    # Phase 2: o1 code draft
+    # Step 5: make alternative user stage reward message to give to o1
     alt_user_plan_msg = PromptMessage(
         role="user",
         content=get_prompt_content(f"{content_version}/fplanforcodestep_user"),
@@ -102,7 +102,7 @@ def rosetta_lh(
         save_hist_to_json(hist, hist_f)
     default_save_msg_hist(alt_user_plan_msg, debug_hist, debug_f)
 
-    # Step 6: add original assistant stage reward message to give to o1-mini
+    # Step 6: add original assistant stage reward message to give to o1
     default_save_msg_hist(asst_plan_msg, hist, hist_f)
     default_save_msg_hist(asst_plan_msg, debug_hist, debug_f)
 
@@ -125,7 +125,7 @@ def rosetta_lh(
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
 
     # Step 8: run api, get preference code assistant message
-    asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
+    asst_code_msg = query_until_complete(client, hist, "o4-mini", params)
 
     # Step 9: add preference code asst message to history and update function dict
     default_save_msg_hist(asst_code_msg, hist, hist_f)
@@ -151,8 +151,8 @@ def rosetta_lh(
     default_save_msg_hist(user_geom_msg, hist, hist_f)
     default_save_msg_hist(user_geom_msg, debug_hist, debug_f)
 
-    # Step 12: get geometry-reviewed code assistant message from o1-mini
-    asst_geom_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 12: get geometry-reviewed code assistant message from o1
+    asst_geom_msg = query_until_complete(client, hist, "o4-mini", params)
 
     # Step 13: add geometry-reviewed code asst message to history and update function dict
     default_save_msg_hist(asst_geom_msg, hist, hist_f)
@@ -171,8 +171,8 @@ def rosetta_lh(
     default_save_msg_hist(user_norm_msg, hist, hist_f)
     default_save_msg_hist(user_norm_msg, debug_hist, debug_f)
 
-    # Step 15: get normalization-reviewed code assistant message from o1-mini
-    asst_norm_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 15: get normalization-reviewed code assistant message from o1
+    asst_norm_msg = query_until_complete(client, hist, "o4-mini", params)
 
     # Step 16: add normalization-reviewed code asst message to history and update function dict
     default_save_msg_hist(asst_norm_msg, hist, hist_f)
@@ -192,8 +192,8 @@ def rosetta_lh(
     default_save_msg_hist(user_clean_msg, hist, hist_f)
     default_save_msg_hist(user_clean_msg, debug_hist, debug_f)
 
-    # Step 18: get code cleanup-reviewed code assistant message from o1-mini
-    asst_clean_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 18: get code cleanup-reviewed code assistant message from o1
+    asst_clean_msg = query_until_complete(client, hist, "o4-mini", params)
 
     # Step 19: add code cleanup-reviewed code asst message to history and update function dict
     default_save_msg_hist(asst_clean_msg, hist, hist_f)

@@ -77,7 +77,7 @@ def rosetta_sh_nohistory(
     # Step 4: get plan message out
     plan = extract_plan(asst_plan_msg)
 
-    # Phase 2 o1-mini code draft
+    # Phase 2 o1 code draft
 
     # Step 5: clear history and add code user message
     user_code_msg = PromptMessage(
@@ -97,7 +97,7 @@ def rosetta_sh_nohistory(
     default_save_msg_hist(user_code_msg, debug_hist, debug_f)
 
     # Step 6: run api, get preference code assistant message
-    asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
+    asst_code_msg = query_until_complete(client, hist, "o4-mini", params)
 
     # Step 7: update latest funcs
     latest_funcs = update_latest_funcs(asst_code_msg, latest_funcs)
@@ -142,8 +142,8 @@ def rosetta_sh_nohistory(
     default_save_msg_hist(user_geom_msg, hist, hist_f)
     default_save_msg_hist(user_geom_msg, debug_hist, debug_f)
 
-    # Step 10: get geometry-reviewed code asst message from o1-mini and update function dict
-    asst_geom_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 10: get geometry-reviewed code asst message from o1 and update function dict
+    asst_geom_msg = query_until_complete(client, hist, "o4-mini", params)
     default_save_msg_hist(asst_geom_msg, debug_hist, debug_f)
     latest_funcs = update_latest_funcs(asst_geom_msg, latest_funcs)
     all_funcs.append(latest_funcs.copy())
@@ -165,8 +165,8 @@ def rosetta_sh_nohistory(
     default_save_msg_hist(user_targets_msg, hist, hist_f)
     default_save_msg_hist(user_targets_msg, debug_hist, debug_f)
 
-    # Step 12: get targets-reviewed code asst message from o1-mini and update function dict
-    asst_targets_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 12: get targets-reviewed code asst message from o1 and update function dict
+    asst_targets_msg = query_until_complete(client, hist, "o4-mini", params)
     default_save_msg_hist(asst_targets_msg, debug_hist, debug_f)
     latest_funcs = update_latest_funcs(asst_targets_msg, latest_funcs)
     all_funcs.append(latest_funcs.copy())
@@ -188,8 +188,8 @@ def rosetta_sh_nohistory(
     default_save_msg_hist(user_targets_msg, hist, hist_f)
     default_save_msg_hist(user_dense_msg, debug_hist, debug_f)
 
-    # Step 14: get density-reviewed code asst message from o1-mini and update function dict
-    asst_dense_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 14: get density-reviewed code asst message from o1 and update function dict
+    asst_dense_msg = query_until_complete(client, hist, "o4-mini", params)
     default_save_msg_hist(asst_dense_msg, debug_hist, debug_f)
     latest_funcs = update_latest_funcs(asst_dense_msg, latest_funcs)
     all_funcs.append(latest_funcs.copy())
@@ -211,8 +211,8 @@ def rosetta_sh_nohistory(
     default_save_msg_hist(user_targets_msg, hist, hist_f)
     default_save_msg_hist(user_masking_msg, debug_hist, debug_f)
 
-    # Step 16: get masking-reviewed code asst message from o1-mini and update function dict
-    asst_masking_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 16: get masking-reviewed code asst message from o1 and update function dict
+    asst_masking_msg = query_until_complete(client, hist, "o4-mini", params)
     default_save_msg_hist(asst_masking_msg, debug_hist, debug_f)
     latest_funcs = update_latest_funcs(asst_masking_msg, latest_funcs)
     all_funcs.append(latest_funcs.copy())

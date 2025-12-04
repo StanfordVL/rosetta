@@ -141,7 +141,7 @@ def o1mini_error_loop(
         error_hist = [user_errorcorr_msg]
 
         # run api on error_hist (just user message)
-        asst_errcorr_msg = query_until_complete(client, error_hist, "o1-mini", params)
+        asst_errcorr_msg = query_until_complete(client, error_hist, "o4-mini", params)
         default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)
 
         latest_funcs = update_latest_funcs(asst_errcorr_msg, latest_funcs)
@@ -201,7 +201,7 @@ def o1mini_error_loop_eureka(
         error_hist = [user_errorcorr_msg]
 
         # run api on error_hist (just user message)
-        asst_errcorr_msg = query_until_complete(client, error_hist, "o1-mini", params)
+        asst_errcorr_msg = query_until_complete(client, error_hist, "o4-mini", params)
         default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)
 
         latest_funcs = update_latest_funcs(asst_errcorr_msg, latest_funcs)
@@ -261,7 +261,7 @@ def o1mini_error_loop_ro(
         error_hist = [user_errorcorr_msg]
 
         # run api on error_hist (just user message)
-        asst_errcorr_msg = query_until_complete(client, error_hist, "o1-mini", params)
+        asst_errcorr_msg = query_until_complete(client, error_hist, "o4-mini", params)
         default_save_msg_hist(asst_errcorr_msg, debug_hist, debug_f)
 
         latest_funcs = update_latest_funcs(asst_errcorr_msg, latest_funcs)

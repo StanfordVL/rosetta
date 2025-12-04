@@ -21,7 +21,7 @@ def query_until_complete(
     """
     messages = [prompt_message.message for prompt_message in history]
 
-    if model in ["o1-preview", "o1-mini"]:
+    if model in ["o3", "o4-mini"]:
         full_response = ""
         response = client.chat.completions.create(
             model=model,

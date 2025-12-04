@@ -7,8 +7,12 @@ DESIGN_NAME_TO_FUNC = {
 
     # Short-horizon continuous control
     "rosetta_sh": (rosetta_sh, "rosetta_sh/rosetta_sh"),
+    "rosetta_sh_variant_1": (rosetta_sh, "rosetta_sh/rosetta_sh_variant_1"),
+    "rosetta_sh_variant_2": (rosetta_sh, "rosetta_sh/rosetta_sh_variant_2"),
+    "rosetta_sh_variant_3": (rosetta_sh, "rosetta_sh/rosetta_sh_variant_3"),
     "rosetta_sh_refined": (rosetta_sh, "rosetta_sh/rosetta_sh_refined"),
     "rosetta_sh_nohistory": (rosetta_sh_nohistory, "rosetta_sh/rosetta_sh_nohistory"),
+    "rosetta_sh_e2e": (rosetta_sh_e2e, "rosetta_sh/rosetta_sh_e2e"),
 
     # Long-horizon action primitives
     "rosetta_lh": (rosetta_lh, "rosetta_lh/rosetta_lh"),

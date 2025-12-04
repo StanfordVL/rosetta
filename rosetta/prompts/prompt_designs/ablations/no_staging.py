@@ -66,8 +66,8 @@ def no_staging(
     print("Completed Step 6")
 
     # Step 7: run api, get preference code assistant message 
-    print("Starting Step 7: Run API to get preference code assistant message from o1-mini")
-    asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
+    print("Starting Step 7: Run API to get preference code assistant message from o1")
+    asst_code_msg = query_until_complete(client, hist, "o4-mini", params)
     print("Completed Step 7")
 
     # Step 8: add preference code asst message to history and update function dict 
@@ -120,9 +120,9 @@ def no_staging(
     default_save_msg_hist(user_geom_msg, debug_hist, debug_f)
     print("Completed Step 10")
 
-    # Step 11: get geometry-reviewed code assistant message from o1-mini 
-    print("Starting Step 11: Get geometry-reviewed code assistant message from o1-mini")
-    asst_geom_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 11: get geometry-reviewed code assistant message from o1 
+    print("Starting Step 11: Get geometry-reviewed code assistant message from o1")
+    asst_geom_msg = query_until_complete(client, hist, "o4-mini", params)
     print("Completed Step 11")
 
     # Step 12: add geometry-reviewed code asst message to history and update function dict
@@ -140,9 +140,9 @@ def no_staging(
     default_save_msg_hist(user_targets_msg, debug_hist, debug_f)
     print("Completed Step 13")
 
-    # Step 14: get targets-reviewed code assistant message from o1-mini 
-    print("Starting Step 14: Get targets-reviewed code assistant message from o1-mini")
-    asst_targets_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 14: get targets-reviewed code assistant message from o1 
+    print("Starting Step 14: Get targets-reviewed code assistant message from o1")
+    asst_targets_msg = query_until_complete(client, hist, "o4-mini", params)
     print("Completed Step 14")
 
     # Step 15: add targets-reviewed code asst message to history and update function dict
@@ -160,9 +160,9 @@ def no_staging(
     default_save_msg_hist(user_dense_msg, debug_hist, debug_f)
     print("Completed Step 16")
 
-    # Step 17: get density-reviewed code assistant message from o1-mini 
-    print("Starting Step 17: Get density-reviewed code assistant message from o1-mini")
-    asst_dense_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 17: get density-reviewed code assistant message from o1 
+    print("Starting Step 17: Get density-reviewed code assistant message from o1")
+    asst_dense_msg = query_until_complete(client, hist, "o4-mini", params)
     print("Completed Step 17")
 
     # Step 18: add density-reviewed code asst message to history and update function dict
@@ -180,9 +180,9 @@ def no_staging(
     default_save_msg_hist(user_mask_msg, debug_hist, debug_f)
     print("Completed Step 19")
 
-    # Step 20: get masking-reviewed code assistant message from o1-mini
-    print("Starting Step 20: Get masking-reviewed code assistant message from o1-mini")
-    asst_mask_msg = query_until_complete(client, hist, "o1-mini", params)
+    # Step 20: get masking-reviewed code assistant message from o1
+    print("Starting Step 20: Get masking-reviewed code assistant message from o1")
+    asst_mask_msg = query_until_complete(client, hist, "o4-mini", params)
     print("Completed Step 20")
 
     # Step 21: add masking-reviewed code asst message to history and update function dict
@@ -196,7 +196,7 @@ def no_staging(
     # Phase 4: error correction
 
     # Step 22: loop error correction
-    print("Starting Step 22: Entering error correction loop using o1-mini as error corrector")
+    print("Starting Step 22: Entering error correction loop using o1 as error corrector")
     if ("skip_error_testing" not in kwargs) or (not kwargs["skip_error_testing"]):
         latest_funcs = o1mini_error_loop(
             client,

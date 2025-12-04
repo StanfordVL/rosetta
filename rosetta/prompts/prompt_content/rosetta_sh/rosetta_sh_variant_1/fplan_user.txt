@@ -1,0 +1,27 @@
+## Original code: 
+```python
+$environment_code
+```
+
+## Human feedback
+Task description PRIOR TO the human providing feedback: $task_description
+Agent execution description: $demo_summary
+Human's feedback: $grounded_preference
+
+## Instructions
+Think systematically to develop a high-level strategy for redesigning `evaluate` and `compute_dense_reward`. The strategy should be a sequence of phases.
+- Don't implement yet, just plan the phases.
+- Consider dependencies and conflicts between task phases, and develop a strategy that doesn't do anything detrimental.
+- Thoroughly consider the physical elements of the task. 
+  - Plan feasible paths
+  - Consider the physical state the agent is in after each phase. Design the next phase to build directly upon it.
+
+## RULES YOU MUST FOLLOW:
+1. Implement human feedback as provided.
+2. Do not add anything that opposes the feedback.
+3. Do not create your own modifications or guess about what the feedback is targeting.
+4. Do not add anything detrimental to the overall objective.
+5. Make every phase atomic. 
+6. Make the strategy comprehensive - think about all the atomic phases the agent needs to accomplish every part of the feedback, not just the final ones.
+7. NEVER instruct the agent to release an object from the gripper. 
+8. NEVER instruct the agent to first move above the target location, below target location, then release or lower down or move up. Just have it go directly to the target location.

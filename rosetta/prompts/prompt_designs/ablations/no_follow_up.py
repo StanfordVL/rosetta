@@ -76,10 +76,10 @@ def no_follow_up(
     asst_plan_msg = query_until_complete(client, hist, "gpt-4o", params)
     print("Completed Step 3")
 
-    # Phase 2: o1-mini code draft
+    # Phase 2: o1 code draft
 
-    # Step 4: make alternative user stage reward message to give to o1-mini
-    print("Starting Step 4: Make alternative user stage reward message for o1-mini")
+    # Step 4: make alternative user stage reward message to give to o1
+    print("Starting Step 4: Make alternative user stage reward message for o1")
     alt_user_plan_msg = PromptMessage(role="user", content=get_prompt_content(f"{content_version}/fplanforcodestep_user"))
     alt_user_plan_msg.fill_dynamic_fields({
         "task_description": task_description,
@@ -94,7 +94,7 @@ def no_follow_up(
     default_save_msg_hist(alt_user_plan_msg, debug_hist, debug_f)
     print("Completed Step 4")
 
-    # Step 5: add original assistant stage reward message to give to o1-mini 
+    # Step 5: add original assistant stage reward message to give to o1 
     print("Starting Step 5: Add original assistant stage reward message to history")
     default_save_msg_hist(asst_plan_msg, hist, hist_f)
     default_save_msg_hist(asst_plan_msg, debug_hist, debug_f)
@@ -112,8 +112,8 @@ def no_follow_up(
     print("Completed Step 6")
 
     # Step 7: run api, get preference code assistant message 
-    print("Starting Step 7: Run API to get preference code assistant message from o1-mini")
-    asst_code_msg = query_until_complete(client, hist, "o1-mini", params)
+    print("Starting Step 7: Run API to get preference code assistant message from o1")
+    asst_code_msg = query_until_complete(client, hist, "o4-mini", params)
     print("Completed Step 7")
 
     # Step 8: add preference code asst message to history and update function dict 

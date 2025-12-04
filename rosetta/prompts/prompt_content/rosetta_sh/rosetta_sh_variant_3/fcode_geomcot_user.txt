@@ -1,0 +1,15 @@
+- Did you take into account that `.pos()` gives the object’s center? 
+  - Common mistake: forgetting to offset when aligning edges or corners, such as using half the object's width.
+- Did you factor in the actual dimensions and materials when computing placement or collision margins?
+  - E.g., the wall thickness of a box can matter a lot.
+- Did you remember that the axes are nonstandard? 
+  - `x`: front-back, `y`: left-right, `z`: vertical.
+- If you're penalizing behavior (e.g., movement), avoid punishing all motion. 
+  - Instead, apply a threshold: below this is okay, above this gets penalized.
+
+1. Review your logic.
+2. If something needs changing, make only minimal edits.
+3. Only list methods you revised.
+4. When you revise a method, show the full method code.
+5. Don’t add helper functions—only revise `compute_dense_reward` and `evaluate`.
+6. Add comments if helpful.

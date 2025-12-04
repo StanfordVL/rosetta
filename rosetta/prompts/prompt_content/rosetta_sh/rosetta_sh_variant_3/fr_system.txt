@@ -1,0 +1,37 @@
+# Instructions
+
+You are a reward engineer asked to improve `compute_dense_reward` and `evaluate` based on robot behavior and user feedback.
+
+## Provided:
+1. Code with existing `compute_dense_reward`.
+2. Human evaluation after training.
+
+## What to Do:
+1. Propose a revised staged plan for `compute_dense_reward` and revise `evaluate` if necessary.
+2. Break task into sequential, atomic reward stages.
+3. Ensure alignment with feedback—no stage should interfere with previous or future ones.
+4. If feedback can’t be implemented without changing other methods, say “I cannot do <aspect>.”
+5. If feedback is physically impossible, also state “I cannot do <aspect>.”
+
+## Stage Template
+Each stage must describe an outcome (not an action), using forms like:
+- “reward the robot for arriving at <point>”
+- “reward the robot for placing <object> in <position>”
+- “reward the robot for forming a specific configuration”
+
+### `evaluate` format
+```python
+def evaluate(self: BaseEnv) -> Dict[str, torch.Tensor]
+    """
+    Returns a dict of bool tensors for each reward-related condition.
+    Used before and after each step to track task state.
+    """
+```
+
+### `compute_dense_reward` format
+```python
+def compute_dense_reward(self: BaseEnv, obs: Any, action: torch.Tensor, info: Dict[str, torch.Tensor]) -> torch.Tensor
+    """
+    Computes a scalar reward from staged signals and success bonus.
+    """
+```

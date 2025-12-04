@@ -1,0 +1,15 @@
+- **Use dense rewards to guide gradual progress.** Is your reward function continuous for states where the robot should be smoothly approaching a target? A dense reward gives partial credit for getting closer, which is essential for learning.
+  - Good candidates for dense rewards: distance to a target, difference in orientation, or gripper opening amount.
+  - **Rule of Thumb:** Any "move to" or "adjust to" goal should have a dense reward.
+- **Use sparse rewards (or binary penalties) for constraints.** Did you avoid using dense penalties for simple thresholds?
+  - **Example:** To keep the robot's speed low, penalize it *only when speed exceeds a threshold*. A dense penalty would incorrectly reward the robot for coming to a complete stop, which is not the goal.
+  - **Example:** To keep a gripper closed, penalize it *only if the gripper is open beyond a certain amount*.
+- **Ensure the robot must reach its goal.** Is it possible for the robot to get partial credit for being "near" a target and then stop making progress?
+  - **Common Pitfall:** Defining a "near" threshold that is too generous and doesn't incentivize the agent to complete the final, precise part of the movement.
+
+1.  Verify the above points in your code.
+2.  If corrections are needed, make them as concisely as possible.
+3.  Output only the methods that you modify.
+4.  When modifying a method, provide its complete source code, not just the changed lines.
+5.  Do not add any new helper methods; restrict your edits to `compute_dense_reward` and `evaluate`.
+6.  Add comments to explain your changes where necessary.

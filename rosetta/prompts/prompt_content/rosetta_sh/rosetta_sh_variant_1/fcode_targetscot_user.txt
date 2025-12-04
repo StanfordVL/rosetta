@@ -1,0 +1,12 @@
+- Did you account for all three dimensions for every position and offset you computed? Common mistakes:
+  - Omitting the z-dimension
+  - Disregarding one or two dimensions when establishing a target position. You must specify all three dimensions in your reward computation, or the agent could cause collisions. For instance, if your reward only considers the x and y dimensions and allows the agent to do anything for z, it could crash into other objects.
+- Did you consistently establish precise target positions to achieve? Common mistakes:
+  - Simply encouraging the agent to move in a particular direction (e.g. "downward" or "beneath an object"). You should always guide it toward a PRECISE POINT IN SPACE, or it won't halt and will move erratically.
+
+1. Verify.
+2. If modifications are required, create minimal versions of them.
+3. Only output methods you are modifying. 
+4. If you are modifying a method, output the complete modified method, not just your changes.
+5. Don't create new methods, not even utility methods. Just modify `compute_dense_reward` and `evaluate`. 
+6. Add comments to your code as appropriate.

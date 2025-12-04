@@ -64,7 +64,7 @@ def eureka(
             default_save_msg_hist(user_code_msg, tmp_hist, hist_f)
             default_save_msg_hist(user_code_msg, debug_hist, debug_f)
         
-            reward_code_msg=query_until_complete(client, tmp_hist, "o1-mini", params)
+            reward_code_msg=query_until_complete(client, tmp_hist, "o4-mini", params)
             default_save_msg_hist(reward_code_msg, tmp_hist, hist_f)
             default_save_msg_hist(reward_code_msg, debug_hist, debug_f)
             tmp_latest_funcs = update_latest_funcs(reward_code_msg, tmp_latest_funcs)

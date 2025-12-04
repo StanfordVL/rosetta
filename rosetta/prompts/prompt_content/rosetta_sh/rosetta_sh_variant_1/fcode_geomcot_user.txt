@@ -1,0 +1,13 @@
+- Did you account for the fact that `.pos()` provides the **central** location? Common mistakes: 
+  - Not applying correct offsets when attempting to position two objects in relation to each other. E.g. half-dimensions, radius values, etc.
+- Did you consider the physical properties of each object and how they might affect target positions? Common mistakes: 
+  - Thickness of container walls
+- Did you recall that unlike standard configurations, x represents the forward-backward axis while y represents the left-right axis? z remains the vertical axis.
+- When applying penalties, did you avoid EXCESSIVE penalization? For instance, if you desire reduced speed, penalizing ALL movement will cause the agent to become stationary and fail the task. Establish a threshold instead.
+
+1. Verify.
+2. If modifications are required, create minimal versions of them.
+3. Only output methods you are modifying. 
+4. If you are modifying a method, output the complete modified method, not just your changes.
+5. Don't create new methods, not even utility methods. Just modify `compute_dense_reward` and `evaluate`. 
+6. Add comments to your code as appropriate.
